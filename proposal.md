@@ -5,7 +5,7 @@ Create a game of Sudoku, where a user can only input the numbers 1-9 in every co
 - A working version of all the Sudoku rules.
 - Different difficulties.
 - At least 3 solvable layouts for the player to play.
-- A system for correct and incorrect answers.
+- A system for correct and incorrect answers (sound effects as well).
 - Instructions tab
 
 
@@ -14,3 +14,4 @@ Create a game of Sudoku, where a user can only input the numbers 1-9 in every co
 - Visual effects like darkening squares that the player clicks on.
 - Usable number pad on screen.
 - Local storage saving possibly for extra for experts.
+- Additional mini games?
