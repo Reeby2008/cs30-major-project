@@ -17,12 +17,13 @@ let button = {
   curve: 10
 };
 let difficultyButton = {
-  x: 726,
-  y: 474,
-  w: 150,
+  w: 200,
   h: 75,
-  curve: 10,
-  offset: 8
+  offset: 15
+};
+let backButton = {
+  x: 50,
+  y: 50
 };
 
 function setup() {
@@ -38,15 +39,31 @@ function mousePressed() {
     difficulty();
   }
   
-  if (game && mouseX >= difficultyButton.x - difficultyButton.w/2 && mouseX <= difficultyButton.x + difficultyButton.w/2 && mouseY >= difficultyButton.y - difficultyButton.h/2 && mouseY <= difficultyButton.y + difficultyButton.h/2) {
-    instructions();
+  //Easy mode
+  if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h * 2 - difficultyButton.offset * 1.5 && mouseY <= height/2 - difficultyButton.h - difficultyButton.offset * 1.5) {
+    sudokuScreen();
+  }
+
+  //Medium mode
+  if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h - difficultyButton.offset/2 && mouseY <= height/2 - difficultyButton.offset/2) {
+    sudokuScreen();
+  }
+
+  //Hard mode
+  if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 + difficultyButton.offset/2 && mouseY <= height/2 + difficultyButton.offset/2 + difficultyButton.h) {
+    sudokuScreen();
+  }
+
+  //How to play the game
+  if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h && mouseY <= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 2) {
+    difficultyAndRules();
   }
 }
 
 function homeScreen() {
   //Display difficulties and play button
   rectMode(CENTER);
-  square(button.x, button.y, BUTTON_SIZE, button.curve, button.curve, button.curve, button.curve);
+  square(button.x, button.y, BUTTON_SIZE, button.curve);
 
   //Display text
   textSize(25);
@@ -56,27 +73,23 @@ function homeScreen() {
 
 function difficulty() {
   clear();
+  game = true;
 
   //Easy button
-  rect(difficultyButton.x, difficultyButton.y - difficultyButton.h * 1.5 - difficultyButton.offset/2 - difficultyButton.offset, difficultyButton.w, difficultyButton.h, difficultyButton.curve, difficultyButton.curve, difficultyButton.curve, difficultyButton.curve);
-  text("Easy", difficultyButton.x, difficultyButton.y - difficultyButton.h * 1.5 - difficultyButton.offset/2 - difficultyButton.offset);
+  rect(width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
+  text("Easy", width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5);
 
   //Medium button
-  rect(difficultyButton.x, difficultyButton.y - difficultyButton.h/2 - difficultyButton.offset/2, difficultyButton.w, difficultyButton.h, difficultyButton.curve, difficultyButton.curve, difficultyButton.curve, difficultyButton.curve);
-  text("Medium", difficultyButton.x, difficultyButton.y - difficultyButton.h/2 - difficultyButton.offset/2);
+  rect(width/2, height/2 - difficultyButton.h/2 - difficultyButton.offset/2, difficultyButton.w, difficultyButton.h, button.curve);
+  text("Medium", width/2, height/2 - difficultyButton.h/2 - difficultyButton.offset/2);
 
   //Hard button
-  rect(difficultyButton.x, difficultyButton.y + difficultyButton.offset/2 + difficultyButton.h/2, difficultyButton.w, difficultyButton.h, difficultyButton.curve, difficultyButton.curve, difficultyButton.curve, difficultyButton.curve);
-  text("Hard", difficultyButton.x, difficultyButton.y + difficultyButton.offset/2 + difficultyButton.h/2);
+  rect(width/2, height/2 + difficultyButton.offset/2 + difficultyButton.h/2, difficultyButton.w, difficultyButton.h, button.curve);
+  text("Hard", width/2, height/2 + difficultyButton.offset/2 + difficultyButton.h/2);
 
   //How to play button
-  rect(difficultyButton.x, difficultyButton.y + difficultyButton.offset/2 + difficultyButton.offset + difficultyButton.h * 1.5, difficultyButton.w, difficultyButton.h, difficultyButton.curve, difficultyButton.curve, difficultyButton.curve, difficultyButton.curve);
-  text("How to Play", difficultyButton.x, difficultyButton.y + difficultyButton.offset/2 + difficultyButton.offset + difficultyButton.h * 1.5);
-
-  circle(width/2, height/2, 2);
-  //Display how to play button
-  // rect(difficultyButton.x, difficultyButton.y, difficultyButton.w, difficultyButton.h, difficultyButton.curve, difficultyButton.curve, difficultyButton.curve, difficultyButton.curve);
-  // text("Hard", difficultyButton.x, difficultyButton.y);
+  rect(width/2, height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
+  text("How to Play", width/2, height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 1.5);
 }
 
 function sudokuScreen() {
@@ -113,8 +126,13 @@ function sudokuScreen() {
 
 function difficultyAndRules() {
   clear();
-  game = true;
 
+  //Instructions
   textSize(14);
   text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2);
+
+  //Back button
+  rect(backButton.x + difficultyButton.w/2, backButton.y + difficultyButton.h/2, difficultyButton.w, difficultyButton.h, button.curve);
+  textSize(25);
+  text("Back", backButton.x + difficultyButton.w/2, backButton.y + difficultyButton.h/2);
 }
