@@ -10,6 +10,8 @@ const GRID_SIZE = BOX_SIZE * 9;
 const BUTTON_SIZE = 150;
 let grid = [];
 let game = false;
+let backToDifficulty = false;
+let backHome = false;
 let gameMode = "easy";
 let button = {
   x: 200,
@@ -29,7 +31,6 @@ let backButton = {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   
-  
   homeScreen();
 }
 
@@ -42,21 +43,41 @@ function mousePressed() {
   //Easy mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h * 2 - difficultyButton.offset * 1.5 && mouseY <= height/2 - difficultyButton.h - difficultyButton.offset * 1.5) {
     sudokuScreen();
+    game = false;
   }
 
   //Medium mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h - difficultyButton.offset/2 && mouseY <= height/2 - difficultyButton.offset/2) {
     sudokuScreen();
+    game = false;
   }
 
   //Hard mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 + difficultyButton.offset/2 && mouseY <= height/2 + difficultyButton.offset/2 + difficultyButton.h) {
     sudokuScreen();
+    game = false;
   }
 
   //How to play the game
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h && mouseY <= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 2) {
     difficultyAndRules();
+    game = false;
+  }
+
+  //Back button
+  if (mouseX >= backButton.x && mouseX <= backButton.x + difficultyButton.w && mouseY >= backButton.y && mouseY <= backButton.y + difficultyButton.h) {
+    //If current screen is no the difficulty screen
+    if (backHome) {
+      clear();
+      homeScreen();
+      backHome = false;
+    }
+
+    //If current screen is the difficulty screen
+    if (backToDifficulty) {
+      difficulty();
+      backToDifficulty = false;
+    }
   }
 }
 
@@ -74,8 +95,10 @@ function homeScreen() {
 function difficulty() {
   clear();
   game = true;
-
+  backHome = true;
+  
   //Easy button
+  rectMode(CENTER);
   rect(width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
   text("Easy", width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5);
 
@@ -90,6 +113,8 @@ function difficulty() {
   //How to play button
   rect(width/2, height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
   text("How to Play", width/2, height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 1.5);
+
+  back();
 }
 
 function sudokuScreen() {
@@ -99,21 +124,25 @@ function sudokuScreen() {
     endX: width/2 + GRID_SIZE/2,
     endY: height/2 + GRID_SIZE/2
   };
-  
+
   clear();
+  backToDifficulty = true;
 
   //Display 9x9 grid and push x and y coordinates into grid
   for (let y = gridPos.startY; y < gridPos.endY; y += BOX_SIZE) {
     for (let x = gridPos.startX; x < gridPos.endX; x += BOX_SIZE) {
+      //Display grid
       strokeWeight(1);
       rectMode(CORNER);
       square(x, y, BOX_SIZE);
 
-      //Outline every 3x3 box
+      //Outline every third vertical line
       if (x === gridPos.startX + BOX_SIZE * 3 || x === gridPos.startX + BOX_SIZE * 6) {
         strokeWeight(3);
         line(x, gridPos.startY, x, gridPos.endY);
       }
+
+      //Outline every third horizontal line
       if (y === gridPos.startY + BOX_SIZE * 3 || y === gridPos.startY + BOX_SIZE * 6) {
         strokeWeight(3);
         line(gridPos.startX, y, gridPos.endX, y);
@@ -122,17 +151,25 @@ function sudokuScreen() {
       grid.push([x, y]);
     }
   }
+
+  back();
 }
 
 function difficultyAndRules() {
   clear();
-
+  backToDifficulty = true;
+  
   //Instructions
   textSize(14);
   text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2);
+  
+  back();
+}
 
-  //Back button
-  rect(backButton.x + difficultyButton.w/2, backButton.y + difficultyButton.h/2, difficultyButton.w, difficultyButton.h, button.curve);
+function back() {
+  //Display the back button
+  rectMode(CORNER);
+  rect(backButton.x, backButton.y, difficultyButton.w, difficultyButton.h, button.curve);
   textSize(25);
   text("Back", backButton.x + difficultyButton.w/2, backButton.y + difficultyButton.h/2);
 }
