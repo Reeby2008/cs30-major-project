@@ -148,7 +148,10 @@ function sudokuScreen() {
         line(gridPos.startX, y, gridPos.endX, y);
       }
 
-      grid.push([x, y]);
+      //Only push x and y values once
+      if (grid.length < 81) {
+        grid.push([x, y]);
+      }
     }
   }
 
