@@ -7,12 +7,14 @@
 
 const BOX_SIZE = 75;
 const GRID_SIZE = BOX_SIZE * 9;
+const GRID_WIDTH = 9;
 const BUTTON_SIZE = 150;
 let grid = [];
 let game = false;
 let backToDifficulty = false;
 let backHome = false;
 let gameMode = "easy";
+let easyLayout;
 let button = {
   x: 200,
   y: 200,
@@ -27,6 +29,10 @@ let backButton = {
   x: 50,
   y: 50
 };
+
+function preload() {
+  easyLayout = loadStrings("layouts/easyLayout.txt");
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -152,6 +158,14 @@ function sudokuScreen() {
       if (grid.length < 81) {
         grid.push([x, y]);
       }
+      
+    }
+  }
+  
+  //Display text file
+  for (let cols = 0; cols < GRID_WIDTH; cols++) {
+    for (let rows = 0; rows < GRID_WIDTH; rows++) {
+      text(easyLayout[cols][rows], grid[rows][0], grid[cols][1]);
     }
   }
 
