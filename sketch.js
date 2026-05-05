@@ -162,11 +162,16 @@ function sudokuScreen() {
     }
   }
   
-  //Display text file
+  //Display text file/layout
+  let y = 0;
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      text(easyLayout[cols][rows], grid[rows][0], grid[cols][1]);
+      //Don't display the zeroes from the text file
+      if (easyLayout[cols][rows] !== 0) {
+        text(easyLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
+      }
     }
+    y += 9;
   }
 
   back();
