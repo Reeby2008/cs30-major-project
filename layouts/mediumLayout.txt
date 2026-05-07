@@ -7,3 +7,5 @@
 000004005
 540109000
 006002041
+
+From https://valeur.org/sudoku/medium/p/sudoku-puzzle-5270.png

@@ -16,6 +16,7 @@ let backHome = false;
 let gameMode = "easy";
 let easyLayout;
 let mediumLayout;
+let hardLayout;
 let button = {
   x: 200,
   y: 200,
@@ -34,6 +35,7 @@ let backButton = {
 function preload() {
   easyLayout = loadStrings("layouts/easyLayout.txt");
   mediumLayout = loadStrings("layouts/mediumLayout.txt");
+  hardLayout = loadStrings("layouts/hardLayout.txt");
 }
 
 function setup() {
@@ -50,23 +52,23 @@ function mousePressed() {
   
   //Easy mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h * 2 - difficultyButton.offset * 1.5 && mouseY <= height/2 - difficultyButton.h - difficultyButton.offset * 1.5) {
-    sudokuScreen();
     game = false;
     gameMode = "easy";
+    sudokuScreen();
   }
 
   //Medium mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h - difficultyButton.offset/2 && mouseY <= height/2 - difficultyButton.offset/2) {
-    sudokuScreen();
     game = false;
     gameMode = "medium";
+    sudokuScreen();
   }
 
   //Hard mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 + difficultyButton.offset/2 && mouseY <= height/2 + difficultyButton.offset/2 + difficultyButton.h) {
-    sudokuScreen();
     game = false;
     gameMode = "hard";
+    sudokuScreen();
   }
 
   //How to play the game
@@ -163,7 +165,6 @@ function sudokuScreen() {
       if (grid.length < 81) {
         grid.push([x, y]);
       }
-      
     }
   }
   
@@ -208,7 +209,7 @@ function easySudoku() {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
       //Don't display the zeroes from the text file
       //Returns true all the time??
-      if (easyLayout[cols][rows] !== 0) {
+      if (easyLayout[cols][rows] !== "0") {
         text(easyLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
       }
     }
@@ -223,7 +224,7 @@ function mediumSudoku() {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
       //Don't display the zeroes from the text file
       //Returns true all the time??
-      if (mediumLayout[cols][rows] !== 0) {
+      if (mediumLayout[cols][rows] !== "0") {
         text(mediumLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
       }
     }
@@ -232,5 +233,16 @@ function mediumSudoku() {
 }
 
 function hardSudoku() {
-  clear();
+  let y = 0;
+
+  for (let cols = 0; cols < GRID_WIDTH; cols++) {
+    for (let rows = 0; rows < GRID_WIDTH; rows++) {
+      //Don't display the zeroes from the text file
+      //Returns true all the time??
+      if (hardLayout[cols][rows] !== "0") {
+        text(hardLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
+      }
+    }
+    y += 9;
+  }
 }
