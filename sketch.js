@@ -14,9 +14,7 @@ let game = false;
 let backToDifficulty = false;
 let backHome = false;
 let gameMode = "easy";
-let easyLayout;
-let mediumLayout;
-let hardLayout;
+let easyLayout, mediumLayout, hardLayout;
 let button = {
   x: 200,
   y: 200,
@@ -183,12 +181,17 @@ function sudokuScreen() {
 }
 
 function difficultyAndRules() {
+  const YOFFSET = 25;
+
   clear();
   backToDifficulty = true;
   
   //Instructions
-  textSize(14);
+  textSize(25);
   text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2);
+  text("each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 + YOFFSET);
+  text("the more spaces filled in, the easier the game.", width/2, height/2 + YOFFSET * 2);
+  text("The more difficult Sudoku puzzles have very few spaces that are already filled in.", width/2, height/2 + YOFFSET * 3);
   
   back();
 }
@@ -202,13 +205,12 @@ function back() {
 }
 
 function easySudoku() {
-  //Display text file/layout
   let y = 0;
-
+  
+  //Display text file/layout
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      //Don't display the zeroes from the text file
-      //Returns true all the time??
+      //Don't display the zeroes from text file
       if (easyLayout[cols][rows] !== "0") {
         text(easyLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
       }
@@ -220,10 +222,10 @@ function easySudoku() {
 function mediumSudoku() {
   let y = 0;
 
+  //Display text file/layout
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      //Don't display the zeroes from the text file
-      //Returns true all the time??
+      //Don't display the zeroes from text file
       if (mediumLayout[cols][rows] !== "0") {
         text(mediumLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
       }
@@ -235,10 +237,10 @@ function mediumSudoku() {
 function hardSudoku() {
   let y = 0;
 
+  //Display text file/layout
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      //Don't display the zeroes from the text file
-      //Returns true all the time??
+      //Don't display the zeroes from text file
       if (hardLayout[cols][rows] !== "0") {
         text(hardLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
       }
