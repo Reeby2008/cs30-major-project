@@ -77,7 +77,7 @@ function mousePressed() {
 
   //Back button
   if (mouseX >= backButton.x && mouseX <= backButton.x + difficultyButton.w && mouseY >= backButton.y && mouseY <= backButton.y + difficultyButton.h) {
-    //If current screen is no the difficulty screen
+    //If current screen is not the difficulty screen
     if (backHome) {
       clear();
       homeScreen();
@@ -90,14 +90,26 @@ function mousePressed() {
       backToDifficulty = false;
     }
   }
+
+  //Detect which box is clicked and if it's empty or not
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid.length; j++) {
+      if (easyLayout[i] === "0" && mouseX >= grid[i][0] && mouseX <= grid[i][0] + BOX_SIZE && mouseY >= grid[i][1] && mouseY <= grid[i][1] + BOX_SIZE) {
+        fill("black");
+        square(grid[i][0], grid[i][1], BOX_SIZE);
+      }
+    }
+  }
 }
 
 function homeScreen() {
   //Display difficulties and play button
+  fill("white");
   rectMode(CENTER);
   square(button.x, button.y, BUTTON_SIZE, button.curve);
 
   //Display text
+  fill("black");
   textSize(25);
   textAlign(CENTER, CENTER);
   text("Sudoku", button.x, button.y);
@@ -109,20 +121,32 @@ function difficulty() {
   backHome = true;
   
   //Easy button
+  fill("white");
   rectMode(CENTER);
   rect(width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
+
+  fill("black");
   text("Easy", width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5);
 
   //Medium button
+  fill("white");
   rect(width/2, height/2 - difficultyButton.h/2 - difficultyButton.offset/2, difficultyButton.w, difficultyButton.h, button.curve);
+
+  fill("black");
   text("Medium", width/2, height/2 - difficultyButton.h/2 - difficultyButton.offset/2);
 
   //Hard button
+  fill("white");
   rect(width/2, height/2 + difficultyButton.offset/2 + difficultyButton.h/2, difficultyButton.w, difficultyButton.h, button.curve);
+
+  fill("black");
   text("Hard", width/2, height/2 + difficultyButton.offset/2 + difficultyButton.h/2);
 
   //How to play button
+  fill("white");
   rect(width/2, height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
+
+  fill("black");
   text("How to Play", width/2, height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 1.5);
 
   back();
@@ -143,6 +167,7 @@ function sudokuScreen() {
   for (let y = gridPos.startY; y < gridPos.endY; y += BOX_SIZE) {
     for (let x = gridPos.startX; x < gridPos.endX; x += BOX_SIZE) {
       //Display grid
+      fill("white");
       strokeWeight(1);
       rectMode(CORNER);
       square(x, y, BOX_SIZE);
@@ -173,7 +198,7 @@ function sudokuScreen() {
   else if (gameMode === "medium") {
     mediumSudoku();
   }
-  else if (gameMode === "hard") {
+  else {
     hardSudoku();
   }
 
@@ -198,9 +223,12 @@ function difficultyAndRules() {
 
 function back() {
   //Display the back button
+  fill("white");
   rectMode(CORNER);
   rect(backButton.x, backButton.y, difficultyButton.w, difficultyButton.h, button.curve);
   textSize(25);
+
+  fill("black");
   text("Back", backButton.x + difficultyButton.w/2, backButton.y + difficultyButton.h/2);
 }
 
@@ -212,6 +240,7 @@ function easySudoku() {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
       //Don't display the zeroes from text file
       if (easyLayout[cols][rows] !== "0") {
+        fill("black");
         text(easyLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
       }
     }
@@ -227,6 +256,7 @@ function mediumSudoku() {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
       //Don't display the zeroes from text file
       if (mediumLayout[cols][rows] !== "0") {
+        fill("black");
         text(mediumLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
       }
     }
@@ -242,6 +272,7 @@ function hardSudoku() {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
       //Don't display the zeroes from text file
       if (hardLayout[cols][rows] !== "0") {
+        fill("black");
         text(hardLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
       }
     }
