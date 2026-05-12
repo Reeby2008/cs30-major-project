@@ -13,8 +13,10 @@ let grid = [];
 let game = false;
 let backToDifficulty = false;
 let backHome = false;
+let input = false;
 let gameMode = "easy";
 let easyLayout, mediumLayout, hardLayout;
+let inputX, inputY;
 let button = {
   x: 200,
   y: 200,
@@ -82,6 +84,7 @@ function mousePressed() {
       clear();
       homeScreen();
       backHome = false;
+      input = false;
     }
 
     //If current screen is the difficulty screen
@@ -93,11 +96,21 @@ function mousePressed() {
 
   //Detect which box is clicked and if it's empty or not
   for (let i = 0; i < grid.length; i++) {
-    for (let j = 0; j < grid.length; j++) {
-      if (easyLayout[i] === "0" && mouseX >= grid[i][0] && mouseX <= grid[i][0] + BOX_SIZE && mouseY >= grid[i][1] && mouseY <= grid[i][1] + BOX_SIZE) {
-        fill("black");
-        square(grid[i][0], grid[i][1], BOX_SIZE);
-      }
+    if (mouseX >= grid[i][0] && mouseX <= grid[i][0] + BOX_SIZE && mouseY >= grid[i][1] && mouseY <= grid[i][1] + BOX_SIZE) {
+      inputX = grid[i][0] + BOX_SIZE/2;
+      inputY = grid[i][1] + BOX_SIZE/2;
+      input = true;
+    }
+  }
+}
+
+function keyPressed() {
+  //Inputting numbers into grid
+  for (let numbers = 1; numbers <= GRID_WIDTH; numbers++) {
+    if (input && key === "" + numbers) {
+      fill("black");
+      textSize(25);
+      text("" + numbers, inputX, inputY);
     }
   }
 }
@@ -278,4 +291,8 @@ function hardSudoku() {
     }
     y += 9;
   }
+}
+
+function checkInput() {
+  
 }
