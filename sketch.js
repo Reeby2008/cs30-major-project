@@ -10,6 +10,7 @@ const GRID_SIZE = BOX_SIZE * 9;
 const GRID_WIDTH = 9;
 const BUTTON_SIZE = 150;
 let grid = [];
+let userInput = [];
 let game = false;
 let backToDifficulty = false;
 let backHome = false;
@@ -250,12 +251,14 @@ function easySudoku() {
   
   //Display text file/layout
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
+    userInput.push([]);
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
       //Don't display the zeroes from text file
       if (easyLayout[cols][rows] !== "0") {
         fill("black");
         text(easyLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
       }
+      userInput[cols].push(easyLayout[cols][rows]);
     }
     y += 9;
   }
@@ -266,12 +269,14 @@ function mediumSudoku() {
 
   //Display text file/layout
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
+    userInput.push([]);
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
       //Don't display the zeroes from text file
       if (mediumLayout[cols][rows] !== "0") {
         fill("black");
         text(mediumLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
       }
+      userInput[cols].push(mediumLayout[cols][rows]);
     }
     y += 9;
   }
@@ -282,12 +287,14 @@ function hardSudoku() {
 
   //Display text file/layout
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
+    userInput.push([]);
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
       //Don't display the zeroes from text file
       if (hardLayout[cols][rows] !== "0") {
         fill("black");
         text(hardLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
       }
+      userInput[cols].push(hardLayout[cols][rows]);
     }
     y += 9;
   }
