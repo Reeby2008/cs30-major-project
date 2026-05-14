@@ -96,11 +96,13 @@ function mousePressed() {
   }
 
   //Detect which box is clicked and if it's empty or not
-  for (let i = 0; i < grid.length; i++) {
-    if (mouseX >= grid[i][0] && mouseX <= grid[i][0] + BOX_SIZE && mouseY >= grid[i][1] && mouseY <= grid[i][1] + BOX_SIZE) {
-      inputX = grid[i][0] + BOX_SIZE/2;
-      inputY = grid[i][1] + BOX_SIZE/2;
-      input = true;
+  for (let cols = 0; cols < GRID_WIDTH; cols++) {
+    for (let rows = 0; rows < GRID_WIDTH; rows++) {
+      if (backToDifficulty && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && mouseX <= grid[cols][rows][0] + BOX_SIZE && mouseY >= grid[cols][rows][1] && mouseY <= grid[cols][rows][1] + BOX_SIZE) {
+        inputX = grid[cols][rows][0] + BOX_SIZE/2;
+        inputY = grid[cols][rows][1] + BOX_SIZE/2;
+        input = true;
+      }
     }
   }
 }
@@ -109,6 +111,11 @@ function keyPressed() {
   //Inputting numbers into grid
   for (let numbers = 1; numbers <= GRID_WIDTH; numbers++) {
     if (input && key === "" + numbers) {
+      noStroke();
+      fill("white");
+      rectMode(CENTER);
+      square(inputX, inputY, 25);
+
       fill("black");
       textSize(25);
       text("" + numbers, inputX, inputY);
@@ -134,35 +141,22 @@ function difficulty() {
   game = true;
   backHome = true;
   
-  //Easy button
+  //Buttons
   fill("white");
+  stroke("black");
   rectMode(CENTER);
   rect(width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
-
-  fill("black");
-  text("Easy", width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5);
-
-  //Medium button
-  fill("white");
   rect(width/2, height/2 - difficultyButton.h/2 - difficultyButton.offset/2, difficultyButton.w, difficultyButton.h, button.curve);
-
-  fill("black");
-  text("Medium", width/2, height/2 - difficultyButton.h/2 - difficultyButton.offset/2);
-
-  //Hard button
-  fill("white");
   rect(width/2, height/2 + difficultyButton.offset/2 + difficultyButton.h/2, difficultyButton.w, difficultyButton.h, button.curve);
-
-  fill("black");
-  text("Hard", width/2, height/2 + difficultyButton.offset/2 + difficultyButton.h/2);
-
-  //How to play button
-  fill("white");
   rect(width/2, height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
 
+  //Button texts
   fill("black");
+  noStroke();
+  text("Easy", width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5);
+  text("Medium", width/2, height/2 - difficultyButton.h/2 - difficultyButton.offset/2);
+  text("Hard", width/2, height/2 + difficultyButton.offset/2 + difficultyButton.h/2);
   text("How to Play", width/2, height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 1.5);
-
   back();
 }
 
@@ -177,8 +171,10 @@ function sudokuScreen() {
   clear();
   backToDifficulty = true;
 
+  let row = 0;
   //Display 9x9 grid and push x and y coordinates into grid
   for (let y = gridPos.startY; y < gridPos.endY; y += BOX_SIZE) {
+    grid.push([]);
     for (let x = gridPos.startX; x < gridPos.endX; x += BOX_SIZE) {
       //Display grid
       fill("white");
@@ -200,9 +196,10 @@ function sudokuScreen() {
 
       //Only push x and y values once
       if (grid.length < 81) {
-        grid.push([x, y]);
+        grid[row].push([x, y]);
       }
     }
+    row++;
   }
   
   //Display appropriate layout based on difficulty selected
@@ -227,10 +224,11 @@ function difficultyAndRules() {
   
   //Instructions
   textSize(25);
-  text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2);
-  text("each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 + YOFFSET);
-  text("the more spaces filled in, the easier the game.", width/2, height/2 + YOFFSET * 2);
-  text("The more difficult Sudoku puzzles have very few spaces that are already filled in.", width/2, height/2 + YOFFSET * 3);
+  text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 2 * YOFFSET);
+  text("each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 - YOFFSET);
+  text("the more spaces filled in, the easier the game.", width/2, height/2);
+  text("The more difficult Sudoku puzzles have very few spaces that are already filled in.", width/2, height/2 + YOFFSET);
+  text("Click on the box you would like to enter a number in, and type in the desired number.", width/2, height/2 + 2 * YOFFSET);
   
   back();
 }
@@ -247,7 +245,8 @@ function back() {
 }
 
 function easySudoku() {
-  let y = 0;
+  //If user clicked previous difficulties, delete from the array
+  userInput.splice(0, 9);
   
   //Display text file/layout
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
@@ -256,16 +255,16 @@ function easySudoku() {
       //Don't display the zeroes from text file
       if (easyLayout[cols][rows] !== "0") {
         fill("black");
-        text(easyLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
+        text(easyLayout[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
       }
       userInput[cols].push(easyLayout[cols][rows]);
     }
-    y += 9;
   }
 }
 
 function mediumSudoku() {
-  let y = 0;
+  //If user clicked previous difficulties, delete from the array
+  userInput.splice(0, 9);
 
   //Display text file/layout
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
@@ -274,16 +273,16 @@ function mediumSudoku() {
       //Don't display the zeroes from text file
       if (mediumLayout[cols][rows] !== "0") {
         fill("black");
-        text(mediumLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
+        text(mediumLayout[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
       }
       userInput[cols].push(mediumLayout[cols][rows]);
     }
-    y += 9;
   }
 }
 
 function hardSudoku() {
-  let y = 0;
+  //If user clicked previous difficulties, delete from the array
+  userInput.splice(0, 9);
 
   //Display text file/layout
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
@@ -292,11 +291,10 @@ function hardSudoku() {
       //Don't display the zeroes from text file
       if (hardLayout[cols][rows] !== "0") {
         fill("black");
-        text(hardLayout[cols][rows], grid[rows][0] + BOX_SIZE/2, grid[y][1] + BOX_SIZE/2);
+        text(hardLayout[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
       }
       userInput[cols].push(hardLayout[cols][rows]);
     }
-    y += 9;
   }
 }
 
