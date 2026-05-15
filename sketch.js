@@ -17,7 +17,7 @@ let backHome = false;
 let input = false;
 let gameMode = "easy";
 let easyLayout, mediumLayout, hardLayout;
-let inputX, inputY;
+let inputX, inputY, changeCols, changeRows;
 let button = {
   x: 200,
   y: 200,
@@ -101,6 +101,8 @@ function mousePressed() {
       if (backToDifficulty && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && mouseX <= grid[cols][rows][0] + BOX_SIZE && mouseY >= grid[cols][rows][1] && mouseY <= grid[cols][rows][1] + BOX_SIZE) {
         inputX = grid[cols][rows][0] + BOX_SIZE/2;
         inputY = grid[cols][rows][1] + BOX_SIZE/2;
+        changeCols = cols;
+        changeRows = rows;
         input = true;
       }
     }
@@ -111,14 +113,20 @@ function keyPressed() {
   //Inputting numbers into grid
   for (let numbers = 1; numbers <= GRID_WIDTH; numbers++) {
     if (input && key === "" + numbers) {
+      //If any numbers present, hide it behind a box
       noStroke();
       fill("white");
       rectMode(CENTER);
       square(inputX, inputY, 25);
 
+      //Display inputted number
       fill("black");
       textSize(25);
       text("" + numbers, inputX, inputY);
+
+      //Change array according to the number the user inputs
+      userInput[changeCols][changeRows] = "" + numbers;
+      checkInput(changeCols, changeRows);
     }
   }
 }
@@ -170,6 +178,7 @@ function sudokuScreen() {
 
   clear();
   backToDifficulty = true;
+  stroke("black");
 
   let row = 0;
   //Display 9x9 grid and push x and y coordinates into grid
@@ -236,11 +245,13 @@ function difficultyAndRules() {
 function back() {
   //Display the back button
   fill("white");
+  stroke("black");
   rectMode(CORNER);
   rect(backButton.x, backButton.y, difficultyButton.w, difficultyButton.h, button.curve);
   textSize(25);
 
   fill("black");
+  noStroke();
   text("Back", backButton.x + difficultyButton.w/2, backButton.y + difficultyButton.h/2);
 }
 
@@ -255,6 +266,7 @@ function easySudoku() {
       //Don't display the zeroes from text file
       if (easyLayout[cols][rows] !== "0") {
         fill("black");
+        noStroke();
         text(easyLayout[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
       }
       userInput[cols].push(easyLayout[cols][rows]);
@@ -273,6 +285,7 @@ function mediumSudoku() {
       //Don't display the zeroes from text file
       if (mediumLayout[cols][rows] !== "0") {
         fill("black");
+        noStroke();
         text(mediumLayout[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
       }
       userInput[cols].push(mediumLayout[cols][rows]);
@@ -291,6 +304,7 @@ function hardSudoku() {
       //Don't display the zeroes from text file
       if (hardLayout[cols][rows] !== "0") {
         fill("black");
+        noStroke();
         text(hardLayout[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
       }
       userInput[cols].push(hardLayout[cols][rows]);
@@ -298,6 +312,17 @@ function hardSudoku() {
   }
 }
 
-function checkInput() {
-  
+function checkInput(locationX, locationY) {
+  for (let y = 0; y < GRID_WIDTH; y++) {
+    if (userInput[locationX][y] === userInput[locationX][locationY] && y !== locationY) {
+      // fill("red");
+      // square(grid[locationX][locationY][0], grid[locationX][locationY][1], BOX_SIZE);
+      console.log("wrong");
+    }
+    else {
+      console.log("right");
+    }
+  }
+  // for (let x = 0; x < GRID_WIDTH; x++) {
+  // }
 }
