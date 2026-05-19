@@ -128,17 +128,28 @@ function keyPressed() {
       userInput[changeCols][changeRows] = "" + numbers;
       checkInput(changeCols, changeRows);
     }
+
+    //Delete input using backspace (doesn't work??)
+    if (input && key === BACKSPACE) {
+      noStroke();
+      fill("white");
+      rectMode(CENTER);
+      square(inputX, inputY, BOX_SIZE);
+    }
   }
+
 }
 
 function homeScreen() {
   //Display difficulties and play button
   fill("white");
+  stroke("black");
   rectMode(CENTER);
   square(button.x, button.y, BUTTON_SIZE, button.curve);
 
   //Display text
   fill("black");
+  noStroke();
   textSize(25);
   textAlign(CENTER, CENTER);
   text("Sudoku", button.x, button.y);
@@ -313,16 +324,29 @@ function hardSudoku() {
 }
 
 function checkInput(locationX, locationY) {
-  for (let y = 0; y < GRID_WIDTH; y++) {
-    if (userInput[locationX][y] === userInput[locationX][locationY] && y !== locationY) {
-      // fill("red");
-      // square(grid[locationX][locationY][0], grid[locationX][locationY][1], BOX_SIZE);
-      console.log("wrong");
-    }
-    else {
-      console.log("right");
+  for (let inputLocation = 0; inputLocation < GRID_WIDTH; inputLocation++) {
+    //If the same number is seen in the same row or column of input
+    if (userInput[locationX][inputLocation] === userInput[locationX][locationY] && inputLocation !== locationY ||
+        userInput[inputLocation][locationY] === userInput[locationX][locationY] && inputLocation !== locationX
+    ) {
+      //Show that input is wrong
+      fill("red");
+      rectMode(CORNER);
+      square(grid[locationX][locationY][0], grid[locationX][locationY][1], BOX_SIZE);
+
+      //Retype number so it shows above red box
+      fill("black");
+      text(userInput[locationX][locationY], inputX, inputY);
+      return console.log("wrong");
     }
   }
-  // for (let x = 0; x < GRID_WIDTH; x++) {
-  // }
+  //Show input is right
+  fill("green");
+  rectMode(CORNER);
+  square(grid[locationX][locationY][0], grid[locationX][locationY][1], BOX_SIZE);
+
+  //Retype number so it shows above green box
+  fill("black");
+  text(userInput[locationX][locationY], inputX, inputY);
+  return console.log("right");
 }
