@@ -15,7 +15,7 @@ let game = false;
 let backToDifficulty = false;
 let backHome = false;
 let input = false;
-let gameMode = "easy";
+let answer = false;
 let easyLayout, mediumLayout, hardLayout;
 let inputX, inputY, changeCols, changeRows;
 let button = {
@@ -54,21 +54,49 @@ function mousePressed() {
   //Easy mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h * 2 - difficultyButton.offset * 1.5 && mouseY <= height/2 - difficultyButton.h - difficultyButton.offset * 1.5) {
     game = false;
-    gameMode = "easy";
+    // gameMode = "easy";
+
+    //Store layout in different grid
+    userInput.splice(0, GRID_WIDTH);
+    for (let cols = 0; cols < GRID_WIDTH; cols++) {
+      userInput.push([]);
+      for (let rows = 0; rows < GRID_WIDTH; rows++) {
+        userInput[cols].push(easyLayout[cols][rows]);
+      }
+    }
+
     sudokuScreen();
   }
 
   //Medium mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h - difficultyButton.offset/2 && mouseY <= height/2 - difficultyButton.offset/2) {
     game = false;
-    gameMode = "medium";
+
+    //Store layout in different grid
+    userInput.splice(0, GRID_WIDTH);
+    for (let cols = 0; cols < GRID_WIDTH; cols++) {
+      userInput.push([]);
+      for (let rows = 0; rows < GRID_WIDTH; rows++) {
+        userInput[cols].push(mediumLayout[cols][rows]);
+      }
+    }
+
     sudokuScreen();
   }
 
   //Hard mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 + difficultyButton.offset/2 && mouseY <= height/2 + difficultyButton.offset/2 + difficultyButton.h) {
     game = false;
-    gameMode = "hard";
+
+    //Store layout in different grid
+    userInput.splice(0, GRID_WIDTH);
+    for (let cols = 0; cols < GRID_WIDTH; cols++) {
+      userInput.push([]);
+      for (let rows = 0; rows < GRID_WIDTH; rows++) {
+        userInput[cols].push(hardLayout[cols][rows]);
+      }
+    }
+
     sudokuScreen();
   }
 
@@ -126,15 +154,17 @@ function keyPressed() {
 
       //Change array according to the number the user inputs
       userInput[changeCols][changeRows] = "" + numbers;
-      checkInput(changeCols, changeRows);
+      checkInput(changeCols, changeRows, "" + numbers);
     }
 
-    //Delete input using backspace (doesn't work??)
-    if (input && key === BACKSPACE) {
-      noStroke();
-      fill("white");
-      rectMode(CENTER);
-      square(inputX, inputY, BOX_SIZE);
+    //Delete incorrect input using backspace
+    if (input && keyCode === BACKSPACE) {
+      console.log(answer);
+      if (answer) {
+        //Change input array so the correct input stays on grid
+        userInput[changeCols][changeRows] = "" + numbers;
+      }
+      sudokuScreen();
     }
   }
 
@@ -222,15 +252,15 @@ function sudokuScreen() {
     row++;
   }
   
-  //Display appropriate layout based on difficulty selected
-  if (gameMode === "easy") {
-    easySudoku();
-  }
-  else if (gameMode === "medium") {
-    mediumSudoku();
-  }
-  else {
-    hardSudoku();
+  //Display input grid
+  for (let cols = 0; cols < GRID_WIDTH; cols++) {
+    for (let rows = 0; rows < GRID_WIDTH; rows++) {
+      if (userInput[cols][rows] !== "0") {
+        fill("black");
+        noStroke();
+        text(userInput[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
+      }
+    }
   }
 
   back();
@@ -266,69 +296,11 @@ function back() {
   text("Back", backButton.x + difficultyButton.w/2, backButton.y + difficultyButton.h/2);
 }
 
-function easySudoku() {
-  //If user clicked previous difficulties, delete from the array
-  userInput.splice(0, 9);
-  
-  //Display text file/layout
-  for (let cols = 0; cols < GRID_WIDTH; cols++) {
-    userInput.push([]);
-    for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      //Don't display the zeroes from text file
-      if (easyLayout[cols][rows] !== "0") {
-        fill("black");
-        noStroke();
-        text(easyLayout[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
-      }
-      userInput[cols].push(easyLayout[cols][rows]);
-    }
-  }
-}
-
-function mediumSudoku() {
-  //If user clicked previous difficulties, delete from the array
-  userInput.splice(0, 9);
-
-  //Display text file/layout
-  for (let cols = 0; cols < GRID_WIDTH; cols++) {
-    userInput.push([]);
-    for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      //Don't display the zeroes from text file
-      if (mediumLayout[cols][rows] !== "0") {
-        fill("black");
-        noStroke();
-        text(mediumLayout[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
-      }
-      userInput[cols].push(mediumLayout[cols][rows]);
-    }
-  }
-}
-
-function hardSudoku() {
-  //If user clicked previous difficulties, delete from the array
-  userInput.splice(0, 9);
-
-  //Display text file/layout
-  for (let cols = 0; cols < GRID_WIDTH; cols++) {
-    userInput.push([]);
-    for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      //Don't display the zeroes from text file
-      if (hardLayout[cols][rows] !== "0") {
-        fill("black");
-        noStroke();
-        text(hardLayout[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
-      }
-      userInput[cols].push(hardLayout[cols][rows]);
-    }
-  }
-}
-
-function checkInput(locationX, locationY) {
+function checkInput(locationX, locationY, inputValue) {
   for (let inputLocation = 0; inputLocation < GRID_WIDTH; inputLocation++) {
     //If the same number is seen in the same row or column of input
     if (userInput[locationX][inputLocation] === userInput[locationX][locationY] && inputLocation !== locationY ||
-        userInput[inputLocation][locationY] === userInput[locationX][locationY] && inputLocation !== locationX
-    ) {
+        userInput[inputLocation][locationY] === userInput[locationX][locationY] && inputLocation !== locationX) {
       //Show that input is wrong
       fill("red");
       rectMode(CORNER);
@@ -337,16 +309,18 @@ function checkInput(locationX, locationY) {
       //Retype number so it shows above red box
       fill("black");
       text(userInput[locationX][locationY], inputX, inputY);
-      return console.log("wrong");
+      answer = false;
+      return answer;
     }
   }
   //Show input is right
   fill("green");
   rectMode(CORNER);
   square(grid[locationX][locationY][0], grid[locationX][locationY][1], BOX_SIZE);
-
+  
   //Retype number so it shows above green box
   fill("black");
   text(userInput[locationX][locationY], inputX, inputY);
-  return console.log("right");
+  answer = true;
+  return answer;
 }
