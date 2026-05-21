@@ -15,7 +15,6 @@ let game = false;
 let backToDifficulty = false;
 let backHome = false;
 let input = false;
-let answer = false;
 let easyLayout, mediumLayout, hardLayout;
 let inputX, inputY, changeCols, changeRows;
 let button = {
@@ -54,49 +53,21 @@ function mousePressed() {
   //Easy mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h * 2 - difficultyButton.offset * 1.5 && mouseY <= height/2 - difficultyButton.h - difficultyButton.offset * 1.5) {
     game = false;
-    // gameMode = "easy";
-
-    //Store layout in different grid
-    userInput.splice(0, GRID_WIDTH);
-    for (let cols = 0; cols < GRID_WIDTH; cols++) {
-      userInput.push([]);
-      for (let rows = 0; rows < GRID_WIDTH; rows++) {
-        userInput[cols].push(easyLayout[cols][rows]);
-      }
-    }
-
+    setGrid(easyLayout);
     sudokuScreen();
   }
 
   //Medium mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h - difficultyButton.offset/2 && mouseY <= height/2 - difficultyButton.offset/2) {
     game = false;
-
-    //Store layout in different grid
-    userInput.splice(0, GRID_WIDTH);
-    for (let cols = 0; cols < GRID_WIDTH; cols++) {
-      userInput.push([]);
-      for (let rows = 0; rows < GRID_WIDTH; rows++) {
-        userInput[cols].push(mediumLayout[cols][rows]);
-      }
-    }
-
+    setGrid(mediumLayout);
     sudokuScreen();
   }
 
   //Hard mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 + difficultyButton.offset/2 && mouseY <= height/2 + difficultyButton.offset/2 + difficultyButton.h) {
     game = false;
-
-    //Store layout in different grid
-    userInput.splice(0, GRID_WIDTH);
-    for (let cols = 0; cols < GRID_WIDTH; cols++) {
-      userInput.push([]);
-      for (let rows = 0; rows < GRID_WIDTH; rows++) {
-        userInput[cols].push(hardLayout[cols][rows]);
-      }
-    }
-
+    setGrid(hardLayout);
     sudokuScreen();
   }
 
@@ -127,6 +98,7 @@ function mousePressed() {
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
       if (backToDifficulty && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && mouseX <= grid[cols][rows][0] + BOX_SIZE && mouseY >= grid[cols][rows][1] && mouseY <= grid[cols][rows][1] + BOX_SIZE) {
+        //Store x, y, cols, and rows in separate variables
         inputX = grid[cols][rows][0] + BOX_SIZE/2;
         inputY = grid[cols][rows][1] + BOX_SIZE/2;
         changeCols = cols;
@@ -141,29 +113,12 @@ function keyPressed() {
   //Inputting numbers into grid
   for (let numbers = 1; numbers <= GRID_WIDTH; numbers++) {
     if (input && key === "" + numbers) {
-      //If any numbers present, hide it behind a box
-      noStroke();
-      fill("white");
-      rectMode(CENTER);
-      square(inputX, inputY, 25);
-
-      //Display inputted number
-      fill("black");
-      textSize(25);
-      text("" + numbers, inputX, inputY);
-
-      //Change array according to the number the user inputs
-      userInput[changeCols][changeRows] = "" + numbers;
-      checkInput(changeCols, changeRows, "" + numbers);
+      //Check if input is correct
+      checkInput("" + numbers);
     }
 
     //Delete incorrect input using backspace
     if (input && keyCode === BACKSPACE) {
-      console.log(answer);
-      if (answer) {
-        //Change input array so the correct input stays on grid
-        userInput[changeCols][changeRows] = "" + numbers;
-      }
       sudokuScreen();
     }
   }
@@ -245,7 +200,7 @@ function sudokuScreen() {
       }
 
       //Only push x and y values once
-      if (grid.length < 81) {
+      if (grid.length < GRID_WIDTH ^ 2) {
         grid[row].push([x, y]);
       }
     }
@@ -279,6 +234,7 @@ function difficultyAndRules() {
   text("the more spaces filled in, the easier the game.", width/2, height/2);
   text("The more difficult Sudoku puzzles have very few spaces that are already filled in.", width/2, height/2 + YOFFSET);
   text("Click on the box you would like to enter a number in, and type in the desired number.", width/2, height/2 + 2 * YOFFSET);
+  text("Use backspace to delete an incorrect input.", width/2, height/2 + 3 * YOFFSET);
   
   back();
 }
@@ -296,31 +252,41 @@ function back() {
   text("Back", backButton.x + difficultyButton.w/2, backButton.y + difficultyButton.h/2);
 }
 
-function checkInput(locationX, locationY, inputValue) {
+function setGrid(layout) {
+  //Store layout in separate grid
+  userInput.splice(0, GRID_WIDTH);
+  for (let cols = 0; cols < GRID_WIDTH; cols++) {
+    userInput.push([]);
+    for (let rows = 0; rows < GRID_WIDTH; rows++) {
+      userInput[cols].push(layout[cols][rows]);
+    }
+  }
+}
+
+function checkInput(inputValue) {
   for (let inputLocation = 0; inputLocation < GRID_WIDTH; inputLocation++) {
     //If the same number is seen in the same row or column of input
-    if (userInput[locationX][inputLocation] === userInput[locationX][locationY] && inputLocation !== locationY ||
-        userInput[inputLocation][locationY] === userInput[locationX][locationY] && inputLocation !== locationX) {
+    if (userInput[changeCols][inputLocation] === inputValue && inputLocation !== changeRows ||
+        userInput[inputLocation][changeRows] === inputValue && inputLocation !== changeCols) {
       //Show that input is wrong
       fill("red");
       rectMode(CORNER);
-      square(grid[locationX][locationY][0], grid[locationX][locationY][1], BOX_SIZE);
+      square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
 
       //Retype number so it shows above red box
       fill("black");
-      text(userInput[locationX][locationY], inputX, inputY);
-      answer = false;
-      return answer;
+      text(inputValue, inputX, inputY);
+      return console.log("wrong");
     }
   }
   //Show input is right
   fill("green");
   rectMode(CORNER);
-  square(grid[locationX][locationY][0], grid[locationX][locationY][1], BOX_SIZE);
+  square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
   
-  //Retype number so it shows above green box
+  //Display input
   fill("black");
-  text(userInput[locationX][locationY], inputX, inputY);
-  answer = true;
-  return answer;
+  text(inputValue, inputX, inputY);
+  userInput[changeCols][changeRows] = inputValue;
+  return console.log("right");
 }
