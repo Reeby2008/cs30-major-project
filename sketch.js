@@ -264,29 +264,25 @@ function setGrid(layout) {
 }
 
 function checkInput(inputValue) {
-  for (let inputLocation = 0; inputLocation < GRID_WIDTH; inputLocation++) {
-    //If the same number is seen in the same row or column of input
-    if (userInput[changeCols][inputLocation] === inputValue && inputLocation !== changeRows ||
-        userInput[inputLocation][changeRows] === inputValue && inputLocation !== changeCols) {
-      //Show that input is wrong
-      fill("red");
-      rectMode(CORNER);
-      square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
-
-      //Retype number so it shows above red box
-      fill("black");
-      text(inputValue, inputX, inputY);
-      return console.log("wrong");
-    }
+  if (inputValue === easyLayout[changeCols + 13][changeRows]) {
+    //Show input is right
+    fill("green");
+    rectMode(CORNER);
+    square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
+    
+    //Display input
+    fill("black");
+    text(inputValue, inputX, inputY);
+    userInput[changeCols][changeRows] = inputValue;
   }
-  //Show input is right
-  fill("green");
-  rectMode(CORNER);
-  square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
-  
-  //Display input
-  fill("black");
-  text(inputValue, inputX, inputY);
-  userInput[changeCols][changeRows] = inputValue;
-  return console.log("right");
+  else {
+    //Create red box if input is incorrect
+    fill("red");
+    rectMode(CORNER);
+    square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
+
+    //Display input
+    fill("black");
+    text(inputValue, inputX, inputY);
+  }
 }
