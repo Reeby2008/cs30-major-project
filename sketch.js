@@ -1,6 +1,6 @@
 // Major Project
 // Mehreeb Shahzad
-// June
+// Friday, June 12, 2026
 
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
@@ -15,7 +15,8 @@ let game = false;
 let backToDifficulty = false;
 let backHome = false;
 let input = false;
-let easyLayout, mediumLayout, hardLayout;
+let answer = true;
+let easyLayout, mediumLayout, hardLayout, chosenLayout;
 let inputX, inputY, changeCols, changeRows;
 let button = {
   x: 200,
@@ -53,21 +54,24 @@ function mousePressed() {
   //Easy mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h * 2 - difficultyButton.offset * 1.5 && mouseY <= height/2 - difficultyButton.h - difficultyButton.offset * 1.5) {
     game = false;
-    setGrid(easyLayout);
+    chosenLayout = easyLayout;
+    setGrid();
     sudokuScreen();
   }
 
   //Medium mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h - difficultyButton.offset/2 && mouseY <= height/2 - difficultyButton.offset/2) {
     game = false;
-    setGrid(mediumLayout);
+    chosenLayout = mediumLayout;
+    setGrid();
     sudokuScreen();
   }
 
   //Hard mode
   if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 + difficultyButton.offset/2 && mouseY <= height/2 + difficultyButton.offset/2 + difficultyButton.h) {
     game = false;
-    setGrid(hardLayout);
+    chosenLayout = hardLayout;
+    setGrid();
     sudokuScreen();
   }
 
@@ -98,12 +102,21 @@ function mousePressed() {
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
       if (backToDifficulty && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && mouseX <= grid[cols][rows][0] + BOX_SIZE && mouseY >= grid[cols][rows][1] && mouseY <= grid[cols][rows][1] + BOX_SIZE) {
+        //Redraw grid so it gets rid of coloured box
+        sudokuScreen();
+        
         //Store x, y, cols, and rows in separate variables
         inputX = grid[cols][rows][0] + BOX_SIZE/2;
         inputY = grid[cols][rows][1] + BOX_SIZE/2;
         changeCols = cols;
         changeRows = rows;
         input = true;
+
+        //Darken the square user clicks on
+        fill(200, 200, 200);
+        noStroke();
+        rectMode(CENTER);
+        square(inputX, inputY, BOX_SIZE);
       }
     }
   }
@@ -114,7 +127,7 @@ function keyPressed() {
   for (let numbers = 1; numbers <= GRID_WIDTH; numbers++) {
     if (input && key === "" + numbers) {
       //Check if input is correct
-      checkInput("" + numbers);
+      checkInput("" + numbers, chosenLayout);
     }
 
     //Delete incorrect input using backspace
@@ -122,7 +135,6 @@ function keyPressed() {
       sudokuScreen();
     }
   }
-
 }
 
 function homeScreen() {
@@ -165,6 +177,7 @@ function difficulty() {
 }
 
 function sudokuScreen() {
+  let row = 0;
   let gridPos = {
     startX: width/2 - GRID_SIZE/2,
     startY: height/2 - GRID_SIZE/2,
@@ -176,7 +189,6 @@ function sudokuScreen() {
   backToDifficulty = true;
   stroke("black");
 
-  let row = 0;
   //Display 9x9 grid and push x and y coordinates into grid
   for (let y = gridPos.startY; y < gridPos.endY; y += BOX_SIZE) {
     grid.push([]);
@@ -199,10 +211,8 @@ function sudokuScreen() {
         line(gridPos.startX, y, gridPos.endX, y);
       }
 
-      //Only push x and y values once
-      if (grid.length < GRID_WIDTH ^ 2) {
-        grid[row].push([x, y]);
-      }
+      //Store x and y value in grid array
+      grid[row].push([x, y]);
     }
     row++;
   }
@@ -218,6 +228,7 @@ function sudokuScreen() {
     }
   }
 
+  strikes();
   back();
 }
 
@@ -252,19 +263,19 @@ function back() {
   text("Back", backButton.x + difficultyButton.w/2, backButton.y + difficultyButton.h/2);
 }
 
-function setGrid(layout) {
+function setGrid() {
   //Store layout in separate grid
   userInput.splice(0, GRID_WIDTH);
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     userInput.push([]);
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      userInput[cols].push(layout[cols][rows]);
+      userInput[cols].push(chosenLayout[cols][rows]);
     }
   }
 }
 
 function checkInput(inputValue) {
-  if (inputValue === easyLayout[changeCols + 13][changeRows]) {
+  if (inputValue === chosenLayout[changeCols + 13][changeRows]) {
     //Show input is right
     fill("green");
     rectMode(CORNER);
@@ -284,5 +295,20 @@ function checkInput(inputValue) {
     //Display input
     fill("black");
     text(inputValue, inputX, inputY);
+  }
+}
+
+function strikes() {
+  for (let x = 3; x < 6; x++) {
+    if (answer) {
+      fill("green");
+      stroke(1);
+      circle(grid[0][x][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2, 35);
+    }
+    else {
+      fill("white");
+      stroke(1);
+      circle(grid[0][x][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2, 35);
+    }
   }
 }

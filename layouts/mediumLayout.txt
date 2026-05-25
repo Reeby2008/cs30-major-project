@@ -9,3 +9,16 @@
 006002041
 
 From https://valeur.org/sudoku/medium/p/sudoku-puzzle-5270.png
+
+Answer Key:
+235467198
+478591326
+169328754
+617943582
+853216479
+924875613
+791684235
+542139867
+386752941
+
+Sudoku Solver: https://www.sudoku-solutions.com/
