@@ -11,6 +11,8 @@ const GRID_WIDTH = 9;
 const BUTTON_SIZE = 150;
 let grid = [];
 let userInput = [];
+let strikeArray = [3, 4, 5];
+
 let game = false;
 let backToDifficulty = false;
 let backHome = false;
@@ -124,15 +126,17 @@ function mousePressed() {
 
 function keyPressed() {
   //Inputting numbers into grid
-  for (let numbers = 1; numbers <= GRID_WIDTH; numbers++) {
-    if (input && key === "" + numbers) {
-      //Check if input is correct
-      checkInput("" + numbers, chosenLayout);
-    }
-
-    //Delete incorrect input using backspace
-    if (input && keyCode === BACKSPACE) {
-      sudokuScreen();
+  if (strikeArray.length > 0) {
+    for (let numbers = 1; numbers <= GRID_WIDTH; numbers++) {
+      if (input && key === "" + numbers) {
+        //Check if input is correct
+        checkInput("" + numbers, chosenLayout);
+      }
+  
+      //Delete incorrect input using backspace
+      if (input && keyCode === BACKSPACE) {
+        sudokuScreen();
+      }
     }
   }
 }
@@ -285,6 +289,7 @@ function checkInput(inputValue) {
     fill("black");
     text(inputValue, inputX, inputY);
     userInput[changeCols][changeRows] = inputValue;
+    answer = true;
   }
   else {
     //Create red box if input is incorrect
@@ -295,20 +300,31 @@ function checkInput(inputValue) {
     //Display input
     fill("black");
     text(inputValue, inputX, inputY);
+    answer = false;
   }
 }
 
 function strikes() {
-  for (let x = 3; x < 6; x++) {
-    if (answer) {
-      fill("green");
-      stroke(1);
-      circle(grid[0][x][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2, 35);
-    }
-    else {
-      fill("white");
-      stroke(1);
-      circle(grid[0][x][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2, 35);
-    }
+  for (let x = 0; x < strikeArray.length; x++) {
+    fill("green");
+    stroke(1);
+    circle(grid[0][strikeArray[x]][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2, 35);
+    // if (answer) {
+    //   fill("green");
+    //   stroke(1);
+    //   circle(grid[0][strikeArray[x]][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2, 35);
+    // }
+  }
+
+  if (!answer) {
+    fill("white");
+    noStroke();
+    rect(grid[0][strikeArray[0]][0], backButton.y, BOX_SIZE);
+    strikeArray.splice(0, 1);
+    answer = true;
+  }
+
+  if (strikeArray.length === 0) {
+    console.log("You lose!");
   }
 }
