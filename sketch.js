@@ -12,11 +12,11 @@ const BUTTON_SIZE = 150;
 let grid = [];
 let userInput = [];
 let strikeArray = [3, 4, 5];
-
 let game = false;
 let backToDifficulty = false;
 let backHome = false;
 let input = false;
+let playing = false;
 let answer = true;
 let easyLayout, mediumLayout, hardLayout, chosenLayout;
 let inputX, inputY, changeCols, changeRows;
@@ -103,7 +103,7 @@ function mousePressed() {
   //Detect which box is clicked and if it's empty or not
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      if (backToDifficulty && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && mouseX <= grid[cols][rows][0] + BOX_SIZE && mouseY >= grid[cols][rows][1] && mouseY <= grid[cols][rows][1] + BOX_SIZE) {
+      if (playing && backToDifficulty && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && mouseX <= grid[cols][rows][0] + BOX_SIZE && mouseY >= grid[cols][rows][1] && mouseY <= grid[cols][rows][1] + BOX_SIZE) {
         //Redraw grid so it gets rid of coloured box
         sudokuScreen();
         
@@ -191,6 +191,7 @@ function sudokuScreen() {
 
   clear();
   backToDifficulty = true;
+  playing = true;
   stroke("black");
 
   //Display 9x9 grid and push x and y coordinates into grid
@@ -244,12 +245,13 @@ function difficultyAndRules() {
   
   //Instructions
   textSize(25);
-  text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 2 * YOFFSET);
-  text("each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 - YOFFSET);
-  text("the more spaces filled in, the easier the game.", width/2, height/2);
-  text("The more difficult Sudoku puzzles have very few spaces that are already filled in.", width/2, height/2 + YOFFSET);
-  text("Click on the box you would like to enter a number in, and type in the desired number.", width/2, height/2 + 2 * YOFFSET);
-  text("Use backspace to delete an incorrect input.", width/2, height/2 + 3 * YOFFSET);
+  text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 3 * YOFFSET);
+  text("each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 - 2 * YOFFSET);
+  text("the more spaces filled in, the easier the game.", width/2, height/2 - YOFFSET);
+  text("The more difficult Sudoku puzzles have very few spaces that are already filled in.", width/2, height/2);
+  text("Click on the box you would like to enter a number in, and type in the desired number.", width/2, height/2 + YOFFSET);
+  text("Use backspace to delete an incorrect input.", width/2, height/2 + 2 * YOFFSET);
+  text("After 3 incorrect guesses, you lose.", width/2, height/2 + 3 * YOFFSET);
   
   back();
 }
@@ -309,11 +311,6 @@ function strikes() {
     fill("green");
     stroke(1);
     circle(grid[0][strikeArray[x]][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2, 35);
-    // if (answer) {
-    //   fill("green");
-    //   stroke(1);
-    //   circle(grid[0][strikeArray[x]][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2, 35);
-    // }
   }
 
   if (!answer) {
@@ -326,5 +323,7 @@ function strikes() {
 
   if (strikeArray.length === 0) {
     console.log("You lose!");
+    fill("black");
+    text("You Lose!", grid[0][4][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2);
   }
 }
