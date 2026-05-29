@@ -36,6 +36,7 @@ let backButton = {
 };
 
 function preload() {
+  //Load text files as strings in an array
   easyLayout = loadStrings("layouts/easyLayout.txt");
   mediumLayout = loadStrings("layouts/mediumLayout.txt");
   hardLayout = loadStrings("layouts/hardLayout.txt");
@@ -48,7 +49,7 @@ function setup() {
 }
 
 function mousePressed() {
-  //Take to game screen if "Play" button is clicked
+  //Take to difficulty screen
   if (mouseX >= button.x - BUTTON_SIZE/2 && mouseX <= button.x + BUTTON_SIZE/2 && mouseY >= button.y - BUTTON_SIZE/2 && mouseY <= button.y + BUTTON_SIZE/2) {
     difficulty();
   }
@@ -98,6 +99,9 @@ function mousePressed() {
       difficulty();
       backToDifficulty = false;
     }
+
+    //Set strikes back to normal if user clicks out of game
+    strikeArray = [3, 4, 5];
   }
 
   //Detect which box is clicked and if it's empty or not
@@ -131,6 +135,7 @@ function keyPressed() {
       if (input && key === "" + numbers) {
         //Check if input is correct
         checkInput("" + numbers, chosenLayout);
+        strikes();
       }
   
       //Delete incorrect input using backspace
@@ -142,7 +147,7 @@ function keyPressed() {
 }
 
 function homeScreen() {
-  //Display difficulties and play button
+  //Display the game button
   fill("white");
   stroke("black");
   rectMode(CENTER);
@@ -196,7 +201,10 @@ function sudokuScreen() {
 
   //Display 9x9 grid and push x and y coordinates into grid
   for (let y = gridPos.startY; y < gridPos.endY; y += BOX_SIZE) {
-    grid.push([]);
+    //Add columns once
+    if (grid.length < GRID_WIDTH) {
+      grid.push([]);
+    }
     for (let x = gridPos.startX; x < gridPos.endX; x += BOX_SIZE) {
       //Display grid
       fill("white");
@@ -216,8 +224,10 @@ function sudokuScreen() {
         line(gridPos.startX, y, gridPos.endX, y);
       }
 
-      //Store x and y value in grid array
-      grid[row].push([x, y]);
+      //Store x and y values in grid array once
+      if (grid.length <= GRID_WIDTH) {
+        grid[row].push([x, y]);
+      }
     }
     row++;
   }
@@ -307,12 +317,14 @@ function checkInput(inputValue) {
 }
 
 function strikes() {
+  //Display strikes
   for (let x = 0; x < strikeArray.length; x++) {
     fill("green");
     stroke(1);
     circle(grid[0][strikeArray[x]][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2, 35);
   }
 
+  //Take one away if user's input is incorrect
   if (!answer) {
     fill("white");
     noStroke();
@@ -321,8 +333,8 @@ function strikes() {
     answer = true;
   }
 
+  //Display loser screen if all strikes are out
   if (strikeArray.length === 0) {
-    console.log("You lose!");
     fill("black");
     text("You Lose!", grid[0][4][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2);
   }
