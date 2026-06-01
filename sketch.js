@@ -18,6 +18,8 @@ let backHome = false;
 let input = false;
 let playing = false;
 let answer = true;
+let x;
+let y = 850;
 let easyLayout, mediumLayout, hardLayout, chosenLayout;
 let inputX, inputY, changeCols, changeRows;
 let button = {
@@ -126,6 +128,14 @@ function mousePressed() {
       }
     }
   }
+
+  //Using number pad
+  for (let num = 1; num <= GRID_WIDTH; num++) {
+    if (playing && mouseX >= x + BOX_SIZE * (num - 1) && mouseX <= x + BOX_SIZE * num && mouseY >= y && mouseY <= y + BOX_SIZE) {
+      checkInput(num, chosenLayout);
+      strikes();
+    }
+  }
 }
 
 function keyPressed() {
@@ -193,12 +203,12 @@ function sudokuScreen() {
     endX: width/2 + GRID_SIZE/2,
     endY: height/2 + GRID_SIZE/2
   };
-
+  
   clear();
   backToDifficulty = true;
   playing = true;
   stroke("black");
-
+  
   //Display 9x9 grid and push x and y coordinates into grid
   for (let y = gridPos.startY; y < gridPos.endY; y += BOX_SIZE) {
     //Add columns once
@@ -211,19 +221,19 @@ function sudokuScreen() {
       strokeWeight(1);
       rectMode(CORNER);
       square(x, y, BOX_SIZE);
-
+      
       //Outline every third vertical line
       if (x === gridPos.startX + BOX_SIZE * 3 || x === gridPos.startX + BOX_SIZE * 6) {
         strokeWeight(3);
         line(x, gridPos.startY, x, gridPos.endY);
       }
-
+      
       //Outline every third horizontal line
       if (y === gridPos.startY + BOX_SIZE * 3 || y === gridPos.startY + BOX_SIZE * 6) {
         strokeWeight(3);
         line(gridPos.startX, y, gridPos.endX, y);
       }
-
+      
       //Store x and y values in grid array once
       if (grid.length <= GRID_WIDTH) {
         grid[row].push([x, y]);
@@ -233,12 +243,26 @@ function sudokuScreen() {
   }
   
   //Display input grid
+  x = grid[0][0][0];
+
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
       if (userInput[cols][rows] !== "0") {
         fill("black");
         noStroke();
         text(userInput[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
+      }
+
+      //Display number pad
+      if (x < BOX_SIZE * 9 + grid[0][0][0]) {
+        fill("white");
+        stroke("black");
+        square(x, y, BOX_SIZE);
+        
+        fill("black");
+        noStroke();
+        text(rows + 1, x + BOX_SIZE/2, y + BOX_SIZE/2);
+        x += BOX_SIZE;
       }
     }
   }
