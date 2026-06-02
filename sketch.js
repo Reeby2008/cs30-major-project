@@ -9,17 +9,14 @@ const BOX_SIZE = 75;
 const GRID_SIZE = BOX_SIZE * 9;
 const GRID_WIDTH = 9;
 const BUTTON_SIZE = 150;
+const NUMBER_PAD_Y = 850;
 let grid = [];
 let userInput = [];
 let strikeArray = [3, 4, 5];
 let game = false;
 let backToDifficulty = false;
 let backHome = false;
-let input = false;
-let playing = false;
 let answer = true;
-let x;
-let y = 850;
 let easyLayout, mediumLayout, hardLayout, chosenLayout;
 let inputX, inputY, changeCols, changeRows;
 let button = {
@@ -93,7 +90,6 @@ function mousePressed() {
       clear();
       homeScreen();
       backHome = false;
-      input = false;
     }
 
     //If current screen is the difficulty screen
@@ -109,7 +105,7 @@ function mousePressed() {
   //Detect which box is clicked and if it's empty or not
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      if (playing && backToDifficulty && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && mouseX <= grid[cols][rows][0] + BOX_SIZE && mouseY >= grid[cols][rows][1] && mouseY <= grid[cols][rows][1] + BOX_SIZE) {
+      if (backToDifficulty && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && mouseX <= grid[cols][rows][0] + BOX_SIZE && mouseY >= grid[cols][rows][1] && mouseY <= grid[cols][rows][1] + BOX_SIZE) {
         //Redraw grid so it gets rid of coloured box
         sudokuScreen();
         
@@ -131,8 +127,14 @@ function mousePressed() {
 
   //Using number pad
   for (let num = 1; num <= GRID_WIDTH; num++) {
-    if (playing && mouseX >= x + BOX_SIZE * (num - 1) && mouseX <= x + BOX_SIZE * num && mouseY >= y && mouseY <= y + BOX_SIZE) {
-      checkInput(num, chosenLayout);
+    if (strikeArray.length > 0 && backToDifficulty && mouseX >= grid[0][0][0] + BOX_SIZE * (num - 1) && mouseX <= grid[0][0][0] + BOX_SIZE * num && mouseY >= NUMBER_PAD_Y && mouseY <= NUMBER_PAD_Y + BOX_SIZE) {
+      //Display number
+      fill("black");
+      noStroke();
+      text(num, inputX, inputY);
+  
+      //Check if input is correct
+      checkInput("" + num, chosenLayout);
       strikes();
     }
   }
@@ -142,14 +144,14 @@ function keyPressed() {
   //Inputting numbers into grid
   if (strikeArray.length > 0) {
     for (let numbers = 1; numbers <= GRID_WIDTH; numbers++) {
-      if (input && key === "" + numbers) {
+      if (backToDifficulty && key === "" + numbers) {
         //Check if input is correct
-        checkInput("" + numbers, chosenLayout);
+        checkInput("" + numbers);
         strikes();
       }
   
       //Delete incorrect input using backspace
-      if (input && keyCode === BACKSPACE) {
+      if (backToDifficulty && keyCode === BACKSPACE) {
         sudokuScreen();
       }
     }
@@ -206,7 +208,6 @@ function sudokuScreen() {
   
   clear();
   backToDifficulty = true;
-  playing = true;
   stroke("black");
   
   //Display 9x9 grid and push x and y coordinates into grid
@@ -257,11 +258,11 @@ function sudokuScreen() {
       if (x < BOX_SIZE * 9 + grid[0][0][0]) {
         fill("white");
         stroke("black");
-        square(x, y, BOX_SIZE);
+        square(x, NUMBER_PAD_Y, BOX_SIZE);
         
         fill("black");
         noStroke();
-        text(rows + 1, x + BOX_SIZE/2, y + BOX_SIZE/2);
+        text(rows + 1, x + BOX_SIZE/2, NUMBER_PAD_Y + BOX_SIZE/2);
         x += BOX_SIZE;
       }
     }
@@ -275,17 +276,17 @@ function difficultyAndRules() {
   const YOFFSET = 25;
 
   clear();
-  backToDifficulty = true;
   
   //Instructions
   textSize(25);
   text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 3 * YOFFSET);
-  text("each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 - 2 * YOFFSET);
+  text("Each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 - 2 * YOFFSET);
   text("the more spaces filled in, the easier the game.", width/2, height/2 - YOFFSET);
   text("The more difficult Sudoku puzzles have very few spaces that are already filled in.", width/2, height/2);
   text("Click on the box you would like to enter a number in, and type in the desired number.", width/2, height/2 + YOFFSET);
-  text("Use backspace to delete an incorrect input.", width/2, height/2 + 2 * YOFFSET);
-  text("After 3 incorrect guesses, you lose.", width/2, height/2 + 3 * YOFFSET);
+  text("To input your desired number, you can either type it in or use the numbers at the bottom of the screen.", width/2, height/2 + 2 * YOFFSET);
+  text("Use backspace to delete an incorrect input.", width/2, height/2 + 3 * YOFFSET);
+  text("After 3 incorrect guesses, you lose.", width/2, height/2 + 4 * YOFFSET);
   
   back();
 }
