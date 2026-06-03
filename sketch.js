@@ -10,6 +10,7 @@ const GRID_SIZE = BOX_SIZE * 9;
 const GRID_WIDTH = 9;
 const BUTTON_SIZE = 150;
 const NUMBER_PAD_Y = 850;
+
 let grid = [];
 let userInput = [];
 let strikeArray = [3, 4, 5];
