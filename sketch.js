@@ -114,7 +114,6 @@ function mousePressed() {
         inputY = grid[cols][rows][1] + BOX_SIZE/2;
         changeCols = cols;
         changeRows = rows;
-        input = true;
 
         //Darken the square user clicks on
         fill(200, 200, 200);
@@ -125,14 +124,9 @@ function mousePressed() {
     }
   }
 
-  //Using number pad
+  //Using numbers on screen
   for (let num = 1; num <= GRID_WIDTH; num++) {
     if (strikeArray.length > 0 && backToDifficulty && mouseX >= grid[0][0][0] + BOX_SIZE * (num - 1) && mouseX <= grid[0][0][0] + BOX_SIZE * num && mouseY >= NUMBER_PAD_Y && mouseY <= NUMBER_PAD_Y + BOX_SIZE) {
-      //Display number
-      fill("black");
-      noStroke();
-      text(num, inputX, inputY);
-  
       //Check if input is correct
       checkInput("" + num, chosenLayout);
       strikes();
@@ -158,6 +152,21 @@ function keyPressed() {
   }
 }
 
+function draw() {
+  if (!backHome && mouseX >= button.x - BUTTON_SIZE/2 && mouseX <= button.x + BUTTON_SIZE/2 && mouseY >= button.y - BUTTON_SIZE/2 && mouseY <= button.y + BUTTON_SIZE/2) {
+    fill("white");
+    stroke("black");
+    rectMode(CENTER);
+    square(button.x, button.y, BUTTON_SIZE * 1.5, button.curve);
+
+    fill("black");
+    noStroke();
+    textSize(25);
+    textAlign(CENTER, CENTER);
+    text("Sudoku", button.x, button.y);
+  }
+}
+
 function homeScreen() {
   //Display the game button
   fill("white");
@@ -165,7 +174,6 @@ function homeScreen() {
   rectMode(CENTER);
   square(button.x, button.y, BUTTON_SIZE, button.curve);
 
-  //Display text
   fill("black");
   noStroke();
   textSize(25);
@@ -184,7 +192,7 @@ function difficulty() {
   rectMode(CENTER);
   rect(width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
   rect(width/2, height/2 - difficultyButton.h/2 - difficultyButton.offset/2, difficultyButton.w, difficultyButton.h, button.curve);
-  rect(width/2, height/2 + difficultyButton.offset/2 + difficultyButton.h/2, difficultyButton.w, difficultyButton.h, button.curve);
+  rect(width/2, height/2 + difficultyButton.h/2 + difficultyButton.offset/2, difficultyButton.w, difficultyButton.h, button.curve);
   rect(width/2, height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
 
   //Button texts
@@ -210,9 +218,9 @@ function sudokuScreen() {
   backToDifficulty = true;
   stroke("black");
   
-  //Display 9x9 grid and push x and y coordinates into grid
+  //Display 9x9 grid and push x and y coordinates into grid array
   for (let y = gridPos.startY; y < gridPos.endY; y += BOX_SIZE) {
-    //Add columns once
+    //Add columns only once
     if (grid.length < GRID_WIDTH) {
       grid.push([]);
     }
@@ -235,7 +243,7 @@ function sudokuScreen() {
         line(gridPos.startX, y, gridPos.endX, y);
       }
       
-      //Store x and y values in grid array once
+      //Store x and y values in grid array only once
       if (grid.length <= GRID_WIDTH) {
         grid[row].push([x, y]);
       }
@@ -248,6 +256,7 @@ function sudokuScreen() {
 
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
+      //Display all non-zero numbers
       if (userInput[cols][rows] !== "0") {
         fill("black");
         noStroke();
@@ -277,16 +286,16 @@ function difficultyAndRules() {
 
   clear();
   
-  //Instructions
+  //Display instructions
   textSize(25);
-  text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 3 * YOFFSET);
-  text("Each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 - 2 * YOFFSET);
-  text("the more spaces filled in, the easier the game.", width/2, height/2 - YOFFSET);
-  text("The more difficult Sudoku puzzles have very few spaces that are already filled in.", width/2, height/2);
-  text("Click on the box you would like to enter a number in, and type in the desired number.", width/2, height/2 + YOFFSET);
-  text("To input your desired number, you can either type it in or use the numbers at the bottom of the screen.", width/2, height/2 + 2 * YOFFSET);
-  text("Use backspace to delete an incorrect input.", width/2, height/2 + 3 * YOFFSET);
-  text("After 3 incorrect guesses, you lose.", width/2, height/2 + 4 * YOFFSET);
+  text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 3.5 * YOFFSET);
+  text("Each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 - 2.5 * YOFFSET);
+  text("the more spaces filled in, the easier the game.", width/2, height/2 - 1.5 * YOFFSET);
+  text("The more difficult Sudoku puzzles have very few spaces that are already filled in.", width/2, height/2 - 0.5 * YOFFSET);
+  text("Click on the box you would like to enter a number in, and type in the desired number.", width/2, height/2 + 0.5 * YOFFSET);
+  text("To input your desired number, you can either type it in or use the numbers at the bottom of the screen.", width/2, height/2 + 1.5 * YOFFSET);
+  text("Use backspace to delete an incorrect input.", width/2, height/2 + 2.5 * YOFFSET);
+  text("After 3 incorrect guesses, you lose.", width/2, height/2 + 3.5 * YOFFSET);
   
   back();
 }
@@ -317,7 +326,7 @@ function setGrid() {
 
 function checkInput(inputValue) {
   if (inputValue === chosenLayout[changeCols + 13][changeRows]) {
-    //Show input is right
+    //Create green box if input is correct
     fill("green");
     rectMode(CORNER);
     square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
@@ -349,7 +358,7 @@ function strikes() {
     circle(grid[0][strikeArray[x]][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2, 35);
   }
 
-  //Take one away if user's input is incorrect
+  //Take away strike if input is incorrect
   if (!answer) {
     fill("white");
     noStroke();
