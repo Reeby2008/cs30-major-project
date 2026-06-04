@@ -44,18 +44,22 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  
-  homeScreen();
 }
 
 function mousePressed() {
   //Take to difficulty screen
-  if (mouseX >= button.x - BUTTON_SIZE/2 && mouseX <= button.x + BUTTON_SIZE/2 && mouseY >= button.y - BUTTON_SIZE/2 && mouseY <= button.y + BUTTON_SIZE/2) {
+  if (mouseX >= button.x - BUTTON_SIZE/2 && 
+      mouseX <= button.x + BUTTON_SIZE/2 && 
+      mouseY >= button.y - BUTTON_SIZE/2 && 
+      mouseY <= button.y + BUTTON_SIZE/2) {
     difficulty();
   }
   
   //Easy mode
-  if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h * 2 - difficultyButton.offset * 1.5 && mouseY <= height/2 - difficultyButton.h - difficultyButton.offset * 1.5) {
+  if (game && mouseX >= width/2 - difficultyButton.w/2 && 
+              mouseX <= width/2 + difficultyButton.w/2 && 
+              mouseY >= height/2 - difficultyButton.h * 2 - difficultyButton.offset * 1.5 && 
+              mouseY <= height/2 - difficultyButton.h - difficultyButton.offset * 1.5) {
     game = false;
     chosenLayout = easyLayout;
     setGrid();
@@ -63,7 +67,10 @@ function mousePressed() {
   }
 
   //Medium mode
-  if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 - difficultyButton.h - difficultyButton.offset/2 && mouseY <= height/2 - difficultyButton.offset/2) {
+  if (game && mouseX >= width/2 - difficultyButton.w/2 && 
+              mouseX <= width/2 + difficultyButton.w/2 && 
+              mouseY >= height/2 - difficultyButton.h - difficultyButton.offset/2 && 
+              mouseY <= height/2 - difficultyButton.offset/2) {
     game = false;
     chosenLayout = mediumLayout;
     setGrid();
@@ -71,7 +78,10 @@ function mousePressed() {
   }
 
   //Hard mode
-  if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 + difficultyButton.offset/2 && mouseY <= height/2 + difficultyButton.offset/2 + difficultyButton.h) {
+  if (game && mouseX >= width/2 - difficultyButton.w/2 && 
+              mouseX <= width/2 + difficultyButton.w/2 && 
+              mouseY >= height/2 + difficultyButton.offset/2 && 
+              mouseY <= height/2 + difficultyButton.offset/2 + difficultyButton.h) {
     game = false;
     chosenLayout = hardLayout;
     setGrid();
@@ -79,13 +89,19 @@ function mousePressed() {
   }
 
   //How to play the game
-  if (game && mouseX >= width/2 - difficultyButton.w/2 && mouseX <= width/2 + difficultyButton.w/2 && mouseY >= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h && mouseY <= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 2) {
+  if (game && mouseX >= width/2 - difficultyButton.w/2 && 
+              mouseX <= width/2 + difficultyButton.w/2 && 
+              mouseY >= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h && 
+              mouseY <= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 2) {
     difficultyAndRules();
     game = false;
   }
 
   //Back button
-  if (mouseX >= backButton.x && mouseX <= backButton.x + difficultyButton.w && mouseY >= backButton.y && mouseY <= backButton.y + difficultyButton.h) {
+  if (mouseX >= backButton.x && 
+      mouseX <= backButton.x + difficultyButton.w && 
+      mouseY >= backButton.y && 
+      mouseY <= backButton.y + difficultyButton.h) {
     //If current screen is not the difficulty screen
     if (backHome) {
       clear();
@@ -106,7 +122,10 @@ function mousePressed() {
   //Detect which box is clicked and if it's empty or not
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      if (backToDifficulty && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && mouseX <= grid[cols][rows][0] + BOX_SIZE && mouseY >= grid[cols][rows][1] && mouseY <= grid[cols][rows][1] + BOX_SIZE) {
+      if (backToDifficulty && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && 
+                                                               mouseX <= grid[cols][rows][0] + BOX_SIZE && 
+                                                               mouseY >= grid[cols][rows][1] && 
+                                                               mouseY <= grid[cols][rows][1] + BOX_SIZE) {
         //Redraw grid so it gets rid of coloured box
         sudokuScreen();
         
@@ -127,7 +146,10 @@ function mousePressed() {
 
   //Using numbers on screen
   for (let num = 1; num <= GRID_WIDTH; num++) {
-    if (strikeArray.length > 0 && backToDifficulty && mouseX >= grid[0][0][0] + BOX_SIZE * (num - 1) && mouseX <= grid[0][0][0] + BOX_SIZE * num && mouseY >= NUMBER_PAD_Y && mouseY <= NUMBER_PAD_Y + BOX_SIZE) {
+    if (strikeArray.length > 0 && backToDifficulty && mouseX >= grid[0][0][0] + BOX_SIZE * (num - 1) && 
+                                                      mouseX <= grid[0][0][0] + BOX_SIZE * num && 
+                                                      mouseY >= NUMBER_PAD_Y && 
+                                                      mouseY <= NUMBER_PAD_Y + BOX_SIZE) {
       //Check if input is correct
       checkInput("" + num, chosenLayout);
       strikes();
@@ -154,11 +176,38 @@ function keyPressed() {
 }
 
 function draw() {
-  if (!backHome && mouseX >= button.x - BUTTON_SIZE/2 && mouseX <= button.x + BUTTON_SIZE/2 && mouseY >= button.y - BUTTON_SIZE/2 && mouseY <= button.y + BUTTON_SIZE/2) {
+  // background(170, 220, 220); light blue
+  // background(220, 220, 170); beige ish
+  // background(225, 195, 225); lavender?
+  homeScreen();
+}
+
+function homeScreen() {
+  if (!backHome && mouseX >= button.x - BUTTON_SIZE/2 && 
+                   mouseX <= button.x + BUTTON_SIZE/2 && 
+                   mouseY >= button.y - BUTTON_SIZE/2 && 
+                   mouseY <= button.y + BUTTON_SIZE/2) {
     fill("white");
     stroke("black");
     rectMode(CENTER);
-    square(button.x, button.y, BUTTON_SIZE * 1.5, button.curve);
+    square(button.x, button.y, BUTTON_SIZE * 1.1, button.curve);
+
+    fill("black");
+    noStroke();
+    textSize(28);
+    textAlign(CENTER, CENTER);
+    text("Sudoku", button.x, button.y);
+  }
+
+  else if (!backHome) {
+    //Cover previous button
+    // createCanvas(windowWidth, windowHeight);
+
+    //Display button
+    fill("white");
+    stroke("black");
+    rectMode(CENTER);
+    square(button.x, button.y, BUTTON_SIZE, button.curve);
 
     fill("black");
     noStroke();
@@ -166,20 +215,6 @@ function draw() {
     textAlign(CENTER, CENTER);
     text("Sudoku", button.x, button.y);
   }
-}
-
-function homeScreen() {
-  //Display the game button
-  fill("white");
-  stroke("black");
-  rectMode(CENTER);
-  square(button.x, button.y, BUTTON_SIZE, button.curve);
-
-  fill("black");
-  noStroke();
-  textSize(25);
-  textAlign(CENTER, CENTER);
-  text("Sudoku", button.x, button.y);
 }
 
 function difficulty() {
