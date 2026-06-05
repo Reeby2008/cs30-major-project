@@ -4,6 +4,7 @@
 
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
+//Sudoku home screen button image: https://is2-ssl.mzstatic.com/image/thumb/Purple115/v4/d6/83/8b/d6838be1-77bd-81bd-2103-f63a2fddcc97/source/512x512bb.jpg
 
 const BOX_SIZE = 75;
 const GRID_SIZE = BOX_SIZE * 9;
@@ -35,6 +36,31 @@ let backButton = {
   x: 50,
   y: 50
 };
+let orange = {
+  r: 255,
+  g: 197,
+  b: 71
+};
+let beige = {
+  r: 242,
+  g: 214,
+  b: 179
+};
+let brown = {
+  r: 89,
+  g: 58,
+  b: 39
+};
+let maroon = {
+  r: 89,
+  g: 20,
+  b: 20
+};
+let lightBrown = {
+  r: 172,
+  g: 121,
+  b: 76
+}
 
 function preload() {
   //Load text files as strings in an array
@@ -51,10 +77,10 @@ function setup() {
 
 function mousePressed() {
   //Take to difficulty screen
-  if (mouseX >= button.x - BUTTON_SIZE/2 && 
-      mouseX <= button.x + BUTTON_SIZE/2 && 
-      mouseY >= button.y - BUTTON_SIZE/2 && 
-      mouseY <= button.y + BUTTON_SIZE/2) {
+  if (mouseX >= width/2 - sudokuVisual.width/2 && 
+      mouseX <= width/2 + sudokuVisual.width/2 && 
+      mouseY >= height/2 - sudokuVisual.height/2 && 
+      mouseY <= height/2 + sudokuVisual.height/2) {
     difficulty();
   }
   
@@ -131,18 +157,18 @@ function mousePressed() {
                                                                mouseY <= grid[cols][rows][1] + BOX_SIZE) {
         //Redraw grid so it gets rid of coloured box
         sudokuScreen();
-        
+
         //Store x, y, cols, and rows in separate variables
         inputX = grid[cols][rows][0] + BOX_SIZE/2;
         inputY = grid[cols][rows][1] + BOX_SIZE/2;
         changeCols = cols;
         changeRows = rows;
 
-        //Darken the square user clicks on
-        fill(200, 200, 200);
+        //Change colour of the square the user clicks on
+        fill(242, 226, 5);
         noStroke();
         rectMode(CENTER);
-        square(inputX, inputY, BOX_SIZE);
+        square(inputX, inputY, BOX_SIZE - 2);
       }
     }
   }
@@ -179,53 +205,38 @@ function keyPressed() {
 }
 
 function draw() {
-  // background(170, 220, 220); light blue
-  // background(225, 195, 225); lavender?
   homeScreen();
 }
 
 function homeScreen() {
-  if (!backHome && mouseX >= button.x - BUTTON_SIZE/2 && 
-                   mouseX <= button.x + BUTTON_SIZE/2 && 
-                   mouseY >= button.y - BUTTON_SIZE/2 && 
-                   mouseY <= button.y + BUTTON_SIZE/2) {
-    // fill("white");
-    // stroke("black");
-    // rectMode(CENTER);
-    // square(button.x, button.y, BUTTON_SIZE * 1.1, button.curve);
-      
-    // fill("black");
-    // noStroke();
-    // textSize(28);
-    // textAlign(CENTER, CENTER);
-    // text("Sudoku", button.x, button.y);
-    image(sudokuVisual, button.x, button.y, sudokuVisual.width/3, sudokuVisual.height/3);
+  if (!backHome && mouseX >= width/2 - sudokuVisual.width/2 && 
+                   mouseX <= width/2 + sudokuVisual.width/2 && 
+                   mouseY >= height/2 - sudokuVisual.height/2 && 
+                   mouseY <= height/2 + sudokuVisual.height/2) {
+    //If hovering over button, enlarge image
+    image(sudokuVisual, width/2, height/2, sudokuVisual.width * 1.1, sudokuVisual.height * 1.1);
   }
     
   else if (!backHome) {
     //Cover previous buttons
-    background(220, 220, 170); //beige ish
+    background(lightBrown.r, lightBrown.g, lightBrown.b);
     imageMode(CENTER);
-    
-    //Display button
-    // fill("white");
-    // stroke("black");
-    // rectMode(CENTER);
-    // square(button.x, button.y, BUTTON_SIZE, button.curve);
 
-    image(sudokuVisual, button.x, button.y, sudokuVisual.width/3.5, sudokuVisual.height/3.5);
+    //Display Image
+    image(sudokuVisual, width/2, height/2, sudokuVisual.width, sudokuVisual.height);
   }
 }
 
 function difficulty() {
   clear();
-  background(220, 220, 170);
+  background(lightBrown.r, lightBrown.g, lightBrown.b);
   game = true;
   backHome = true;
   
   //Buttons
-  fill(253, 253, 150);
-  stroke("black");
+  fill(beige.r, beige.g, beige.b);
+  strokeWeight(4);
+  stroke(brown.r, brown.g, brown.b);
   rectMode(CENTER);
   rect(width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
   rect(width/2, height/2 - difficultyButton.h/2 - difficultyButton.offset/2, difficultyButton.w, difficultyButton.h, button.curve);
@@ -233,8 +244,10 @@ function difficulty() {
   rect(width/2, height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
 
   //Button texts
-  fill("black");
+  fill(89, 20, 20);
   noStroke();
+  textSize(25);
+  textAlign(CENTER);
   text("Easy", width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5);
   text("Medium", width/2, height/2 - difficultyButton.h/2 - difficultyButton.offset/2);
   text("Hard", width/2, height/2 + difficultyButton.offset/2 + difficultyButton.h/2);
@@ -254,6 +267,7 @@ function sudokuScreen() {
   clear();
   backToDifficulty = true;
   stroke("black");
+  background(lightBrown.r, lightBrown.g, lightBrown.b);
   
   //Display 9x9 grid and push x and y coordinates into grid array
   for (let y = gridPos.startY; y < gridPos.endY; y += BOX_SIZE) {
@@ -263,20 +277,23 @@ function sudokuScreen() {
     }
     for (let x = gridPos.startX; x < gridPos.endX; x += BOX_SIZE) {
       //Display grid
-      fill("white");
+      fill(beige.r, beige.g, beige.b);
+      stroke(brown.r, brown.g, brown.b);
       strokeWeight(1);
       rectMode(CORNER);
       square(x, y, BOX_SIZE);
       
       //Outline every third vertical line
       if (x === gridPos.startX + BOX_SIZE * 3 || x === gridPos.startX + BOX_SIZE * 6) {
-        strokeWeight(3);
+        strokeWeight(7);
+        stroke(brown.r, brown.g, brown.b);
         line(x, gridPos.startY, x, gridPos.endY);
       }
       
       //Outline every third horizontal line
       if (y === gridPos.startY + BOX_SIZE * 3 || y === gridPos.startY + BOX_SIZE * 6) {
-        strokeWeight(3);
+        strokeWeight(7);
+        stroke(brown.r, brown.g, brown.b);
         line(gridPos.startX, y, gridPos.endX, y);
       }
       
@@ -302,7 +319,7 @@ function sudokuScreen() {
 
       //Display number pad
       if (x < BOX_SIZE * 9 + grid[0][0][0]) {
-        fill("white");
+        fill(orange.r, orange.g, orange.b);
         stroke("black");
         square(x, NUMBER_PAD_Y, BOX_SIZE);
         
@@ -322,9 +339,11 @@ function difficultyAndRules() {
   const YOFFSET = 25;
 
   clear();
+  background(lightBrown.r, lightBrown.g, lightBrown.b);
   
   //Display instructions
   textSize(25);
+  textAlign(CENTER);
   text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 3.5 * YOFFSET);
   text("Each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 - 2.5 * YOFFSET);
   text("the more spaces filled in, the easier the game.", width/2, height/2 - 1.5 * YOFFSET);
@@ -339,14 +358,15 @@ function difficultyAndRules() {
 
 function back() {
   //Display the back button
-  fill("white");
-  stroke("black");
+  fill(orange.r, orange.g, orange.b);
+  stroke(89, 58, 39);
   rectMode(CORNER);
   rect(backButton.x, backButton.y, difficultyButton.w, difficultyButton.h, button.curve);
   textSize(25);
 
-  fill("black");
+  fill(89, 20, 20);
   noStroke();
+  textAlign(CENTER);
   text("Back", backButton.x + difficultyButton.w/2, backButton.y + difficultyButton.h/2);
 }
 
@@ -371,6 +391,7 @@ function checkInput(inputValue) {
     //Display input
     fill("black");
     text(inputValue, inputX, inputY);
+    textAlign(CENTER);
     userInput[changeCols][changeRows] = inputValue;
     answer = true;
   }
@@ -407,6 +428,7 @@ function strikes() {
   //Display loser screen if all strikes are out
   if (strikeArray.length === 0) {
     fill("black");
+    textAlign(CENTER);
     text("You Lose!", grid[0][4][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2);
   }
 }
