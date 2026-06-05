@@ -20,6 +20,7 @@ let backHome = false;
 let answer = true;
 let easyLayout, mediumLayout, hardLayout, chosenLayout;
 let inputX, inputY, changeCols, changeRows;
+let sudokuVisual;
 let button = {
   x: 200,
   y: 200,
@@ -40,6 +41,8 @@ function preload() {
   easyLayout = loadStrings("layouts/easyLayout.txt");
   mediumLayout = loadStrings("layouts/mediumLayout.txt");
   hardLayout = loadStrings("layouts/hardLayout.txt");
+
+  sudokuVisual = loadImage("sudokuLogo.png");
 }
 
 function setup() {
@@ -177,7 +180,6 @@ function keyPressed() {
 
 function draw() {
   // background(170, 220, 220); light blue
-  // background(220, 220, 170); beige ish
   // background(225, 195, 225); lavender?
   homeScreen();
 }
@@ -187,43 +189,42 @@ function homeScreen() {
                    mouseX <= button.x + BUTTON_SIZE/2 && 
                    mouseY >= button.y - BUTTON_SIZE/2 && 
                    mouseY <= button.y + BUTTON_SIZE/2) {
-    fill("white");
-    stroke("black");
-    rectMode(CENTER);
-    square(button.x, button.y, BUTTON_SIZE * 1.1, button.curve);
-
-    fill("black");
-    noStroke();
-    textSize(28);
-    textAlign(CENTER, CENTER);
-    text("Sudoku", button.x, button.y);
+    // fill("white");
+    // stroke("black");
+    // rectMode(CENTER);
+    // square(button.x, button.y, BUTTON_SIZE * 1.1, button.curve);
+      
+    // fill("black");
+    // noStroke();
+    // textSize(28);
+    // textAlign(CENTER, CENTER);
+    // text("Sudoku", button.x, button.y);
+    image(sudokuVisual, button.x, button.y, sudokuVisual.width/3, sudokuVisual.height/3);
   }
-
+    
   else if (!backHome) {
-    //Cover previous button
-    // createCanvas(windowWidth, windowHeight);
-
+    //Cover previous buttons
+    background(220, 220, 170); //beige ish
+    imageMode(CENTER);
+    
     //Display button
-    fill("white");
-    stroke("black");
-    rectMode(CENTER);
-    square(button.x, button.y, BUTTON_SIZE, button.curve);
+    // fill("white");
+    // stroke("black");
+    // rectMode(CENTER);
+    // square(button.x, button.y, BUTTON_SIZE, button.curve);
 
-    fill("black");
-    noStroke();
-    textSize(25);
-    textAlign(CENTER, CENTER);
-    text("Sudoku", button.x, button.y);
+    image(sudokuVisual, button.x, button.y, sudokuVisual.width/3.5, sudokuVisual.height/3.5);
   }
 }
 
 function difficulty() {
   clear();
+  background(220, 220, 170);
   game = true;
   backHome = true;
   
   //Buttons
-  fill("white");
+  fill(253, 253, 150);
   stroke("black");
   rectMode(CENTER);
   rect(width/2, height/2 - difficultyButton.h * 1.5 - difficultyButton.offset * 1.5, difficultyButton.w, difficultyButton.h, button.curve);
