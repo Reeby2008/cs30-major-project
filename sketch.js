@@ -15,9 +15,7 @@ const NUMBER_PAD_Y = 850;
 let grid = [];
 let userInput = [];
 let strikeArray = [3, 4, 5];
-let game = false;
-let backToDifficulty = false;
-let backHome = false;
+let currentScreen = "home";
 let answer = true;
 let easyLayout, mediumLayout, hardLayout, chosenLayout;
 let inputX, inputY, changeCols, changeRows;
@@ -60,7 +58,7 @@ let lightBrown = {
   r: 172,
   g: 121,
   b: 76
-}
+};
 
 function preload() {
   //Load text files as strings in an array
@@ -76,54 +74,36 @@ function setup() {
 }
 
 function mousePressed() {
-  //Take to difficulty screen
-  if (mouseX >= width/2 - sudokuVisual.width/2 && 
-      mouseX <= width/2 + sudokuVisual.width/2 && 
-      mouseY >= height/2 - sudokuVisual.height/2 && 
-      mouseY <= height/2 + sudokuVisual.height/2) {
-    difficulty();
-  }
-  
   //Easy mode
-  if (game && mouseX >= width/2 - difficultyButton.w/2 && 
-              mouseX <= width/2 + difficultyButton.w/2 && 
-              mouseY >= height/2 - difficultyButton.h * 2 - difficultyButton.offset * 1.5 && 
-              mouseY <= height/2 - difficultyButton.h - difficultyButton.offset * 1.5) {
-    game = false;
-    chosenLayout = easyLayout;
-    setGrid();
-    sudokuScreen();
+  if (currentScreen === "difficulty" && mouseX >= width/2 - difficultyButton.w/2 && 
+                                        mouseX <= width/2 + difficultyButton.w/2 && 
+                                        mouseY >= height/2 - difficultyButton.h * 2 - difficultyButton.offset * 1.5 && 
+                                        mouseY <= height/2 - difficultyButton.h - difficultyButton.offset * 1.5) {
+    setGrid(easyLayout);
   }
 
   //Medium mode
-  if (game && mouseX >= width/2 - difficultyButton.w/2 && 
-              mouseX <= width/2 + difficultyButton.w/2 && 
-              mouseY >= height/2 - difficultyButton.h - difficultyButton.offset/2 && 
-              mouseY <= height/2 - difficultyButton.offset/2) {
-    game = false;
-    chosenLayout = mediumLayout;
-    setGrid();
-    sudokuScreen();
+  if (currentScreen === "difficulty" && mouseX >= width/2 - difficultyButton.w/2 && 
+                                        mouseX <= width/2 + difficultyButton.w/2 && 
+                                        mouseY >= height/2 - difficultyButton.h - difficultyButton.offset/2 && 
+                                        mouseY <= height/2 - difficultyButton.offset/2) {
+    setGrid(mediumLayout);
   }
 
   //Hard mode
-  if (game && mouseX >= width/2 - difficultyButton.w/2 && 
-              mouseX <= width/2 + difficultyButton.w/2 && 
-              mouseY >= height/2 + difficultyButton.offset/2 && 
-              mouseY <= height/2 + difficultyButton.offset/2 + difficultyButton.h) {
-    game = false;
-    chosenLayout = hardLayout;
-    setGrid();
-    sudokuScreen();
+  if (currentScreen === "difficulty" && mouseX >= width/2 - difficultyButton.w/2 && 
+                                        mouseX <= width/2 + difficultyButton.w/2 && 
+                                        mouseY >= height/2 + difficultyButton.offset/2 && 
+                                        mouseY <= height/2 + difficultyButton.offset/2 + difficultyButton.h) {
+    setGrid(hardLayout);
   }
 
   //How to play the game
-  if (game && mouseX >= width/2 - difficultyButton.w/2 && 
-              mouseX <= width/2 + difficultyButton.w/2 && 
-              mouseY >= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h && 
-              mouseY <= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 2) {
+  if (currentScreen === "difficulty" && mouseX >= width/2 - difficultyButton.w/2 && 
+                                        mouseX <= width/2 + difficultyButton.w/2 && 
+                                        mouseY >= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h && 
+                                        mouseY <= height/2 + difficultyButton.offset * 1.5 + difficultyButton.h * 2) {
     difficultyAndRules();
-    game = false;
   }
 
   //Back button
@@ -132,29 +112,35 @@ function mousePressed() {
       mouseY >= backButton.y && 
       mouseY <= backButton.y + difficultyButton.h) {
     //If current screen is not the difficulty screen
-    if (backHome) {
+    if (currentScreen === "difficulty") {
       clear();
       homeScreen();
-      backHome = false;
     }
 
     //If current screen is the difficulty screen
-    if (backToDifficulty) {
+    if (currentScreen === "game" || currentScreen === "instructions") {
       difficulty();
-      backToDifficulty = false;
     }
 
     //Set strikes back to normal if user clicks out of game
     strikeArray = [3, 4, 5];
   }
 
+  //Take to difficulty screen
+  if (currentScreen === "home" && mouseX >= width/2 - sudokuVisual.width/2 && 
+                                  mouseX <= width/2 + sudokuVisual.width/2 && 
+                                  mouseY >= height/2 - sudokuVisual.height/2 && 
+                                  mouseY <= height/2 + sudokuVisual.height/2) {
+    difficulty();
+  }
+
   //Detect which box is clicked and if it's empty or not
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      if (backToDifficulty && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && 
-                                                               mouseX <= grid[cols][rows][0] + BOX_SIZE && 
-                                                               mouseY >= grid[cols][rows][1] && 
-                                                               mouseY <= grid[cols][rows][1] + BOX_SIZE) {
+      if (currentScreen === "game" && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && 
+                                                                       mouseX <= grid[cols][rows][0] + BOX_SIZE && 
+                                                                       mouseY >= grid[cols][rows][1] && 
+                                                                       mouseY <= grid[cols][rows][1] + BOX_SIZE) {
         //Redraw grid so it gets rid of coloured box
         sudokuScreen();
 
@@ -169,16 +155,19 @@ function mousePressed() {
         noStroke();
         rectMode(CENTER);
         square(inputX, inputY, BOX_SIZE - 1);
+
+        strikes();
+        outlineBoxes();
       }
     }
   }
 
   //Using numbers on screen
   for (let num = 1; num <= GRID_WIDTH; num++) {
-    if (strikeArray.length > 0 && backToDifficulty && mouseX >= grid[0][0][0] + BOX_SIZE * (num - 1) && 
-                                                      mouseX <= grid[0][0][0] + BOX_SIZE * num && 
-                                                      mouseY >= NUMBER_PAD_Y && 
-                                                      mouseY <= NUMBER_PAD_Y + BOX_SIZE) {
+    if (strikeArray.length > 0 && currentScreen === "game" && mouseX >= grid[0][0][0] + BOX_SIZE * (num - 1) && 
+                                                              mouseX <= grid[0][0][0] + BOX_SIZE * num && 
+                                                              mouseY >= NUMBER_PAD_Y && 
+                                                              mouseY <= NUMBER_PAD_Y + BOX_SIZE) {
       //Check if input is correct
       checkInput("" + num, chosenLayout);
       strikes();
@@ -190,14 +179,14 @@ function keyPressed() {
   //Inputting numbers into grid
   if (strikeArray.length > 0) {
     for (let numbers = 1; numbers <= GRID_WIDTH; numbers++) {
-      if (backToDifficulty && key === "" + numbers) {
+      if (currentScreen === "game" && key === "" + numbers) {
         //Check if input is correct
         checkInput("" + numbers);
         strikes();
       }
   
       //Delete incorrect input using backspace
-      if (backToDifficulty && keyCode === BACKSPACE) {
+      if (currentScreen === "game" && keyCode === BACKSPACE) {
         sudokuScreen();
       }
     }
@@ -205,20 +194,23 @@ function keyPressed() {
 }
 
 function draw() {
-  homeScreen();
+  if (currentScreen === "home") {
+    homeScreen();
+  }
 }
 
 function homeScreen() {
+  currentScreen = "home";
   imageMode(CENTER);
-  if (!backHome && mouseX >= width/2 - sudokuVisual.width/2 && 
-                   mouseX <= width/2 + sudokuVisual.width/2 && 
-                   mouseY >= height/2 - sudokuVisual.height/2 && 
-                   mouseY <= height/2 + sudokuVisual.height/2) {
+  if (currentScreen === "home" && mouseX >= width/2 - sudokuVisual.width/2 && 
+                                 mouseX <= width/2 + sudokuVisual.width/2 && 
+                                 mouseY >= height/2 - sudokuVisual.height/2 && 
+                                 mouseY <= height/2 + sudokuVisual.height/2) {
     //If hovering over button, enlarge image
     image(sudokuVisual, width/2, height/2, sudokuVisual.width * 1.1, sudokuVisual.height * 1.1);
   }
 
-  else if (!backHome) {
+  else if (currentScreen === "home") {
     //Cover previous buttons
     background(lightBrown.r, lightBrown.g, lightBrown.b);
 
@@ -229,8 +221,7 @@ function homeScreen() {
 
 function difficulty() {
   clear();
-  game = true;
-  backHome = true;
+  currentScreen = "difficulty";
   
   //Buttons
   fill(beige.r, beige.g, beige.b);
@@ -265,7 +256,8 @@ function sudokuScreen() {
   grid = [];
   
   clear();
-  backToDifficulty = true;
+  // backToDifficulty = true;
+  currentScreen = "game";
   stroke(brown.r, brown.g, brown.b);
   background(lightBrown.r, lightBrown.g, lightBrown.b);
   
@@ -281,25 +273,26 @@ function sudokuScreen() {
       rectMode(CORNER);
       square(x, y, BOX_SIZE);
       
-      //Outline every third vertical line
-      if (x === gridPos.startX + BOX_SIZE * 3 || x === gridPos.startX + BOX_SIZE * 6) {
-        strokeWeight(7);
-        stroke(brown.r, brown.g, brown.b);
-        line(x, gridPos.startY, x, gridPos.endY);
-      }
+      // //Outline every third vertical line
+      // if (x === gridPos.startX + BOX_SIZE * 3 || x === gridPos.startX + BOX_SIZE * 6) {
+      //   strokeWeight(7);
+      //   stroke(brown.r, brown.g, brown.b);
+      //   line(x, gridPos.startY, x, gridPos.endY);
+      // }
       
-      //Outline every third horizontal line
-      if (y === gridPos.startY + BOX_SIZE * 3 || y === gridPos.startY + BOX_SIZE * 6) {
-        strokeWeight(7);
-        stroke(brown.r, brown.g, brown.b);
-        line(gridPos.startX, y, gridPos.endX, y);
-      }
+      // //Outline every third horizontal line
+      // if (y === gridPos.startY + BOX_SIZE * 3 || y === gridPos.startY + BOX_SIZE * 6) {
+      //   strokeWeight(7);
+      //   stroke(brown.r, brown.g, brown.b);
+      //   line(gridPos.startX, y, gridPos.endX, y);
+      // }
       
       //Store x and y values in grid array only once
       grid[row].push([x, y]);
     }
     row++;
   }
+  outlineBoxes();
   
   //Display input grid
   x = grid[0][0][0];
@@ -310,6 +303,7 @@ function sudokuScreen() {
       if (userInput[cols][rows] !== "0") {
         fill(maroon.r, maroon.g, maroon.b);
         noStroke();
+        textSize(25);
         text(userInput[cols][rows], grid[cols][rows][0] + BOX_SIZE/2, grid[cols][rows][1] + BOX_SIZE/2);
       }
 
@@ -331,11 +325,38 @@ function sudokuScreen() {
   back();
 }
 
+function outlineBoxes() {
+  let gridPos = {
+    startX: width/2 - GRID_SIZE/2,
+    startY: height/2 - GRID_SIZE/2,
+    endX: width/2 + GRID_SIZE/2,
+    endY: height/2 + GRID_SIZE/2
+  };
+
+  for (let y = gridPos.startY; y < gridPos.endY; y += BOX_SIZE) {
+    for (let x = gridPos.startX; x < gridPos.endX; x += BOX_SIZE) {
+      //Outline every third vertical line
+      if (x === gridPos.startX + BOX_SIZE * 3 || x === gridPos.startX + BOX_SIZE * 6) {
+        strokeWeight(7);
+        stroke(brown.r, brown.g, brown.b);
+        line(x, gridPos.startY, x, gridPos.endY);
+      }
+          
+      //Outline every third horizontal line
+      if (y === gridPos.startY + BOX_SIZE * 3 || y === gridPos.startY + BOX_SIZE * 6) {
+        strokeWeight(7);
+        stroke(brown.r, brown.g, brown.b);
+        line(gridPos.startX, y, gridPos.endX, y);
+      }
+    }
+  }
+}
+
 function difficultyAndRules() {
   const YOFFSET = 25;
 
   clear();
-  background(lightBrown.r, lightBrown.g, lightBrown.b);
+  currentScreen = "instructions";
   
   //Display instructions
   textSize(25);
@@ -366,8 +387,9 @@ function back() {
   text("Back", backButton.x + difficultyButton.w/2, backButton.y + difficultyButton.h/2);
 }
 
-function setGrid() {
+function setGrid(layout) {
   //Store layout in separate grid
+  chosenLayout = layout;
   userInput.splice(0, GRID_WIDTH);
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     userInput.push([]);
@@ -375,6 +397,7 @@ function setGrid() {
       userInput[cols].push(chosenLayout[cols][rows]);
     }
   }
+  sudokuScreen();
 }
 
 function checkInput(inputValue) {
@@ -386,21 +409,28 @@ function checkInput(inputValue) {
     
     //Display input
     fill(maroon.r, maroon.g, maroon.b);
+    noStroke();
     text(inputValue, inputX, inputY);
     textAlign(CENTER);
     userInput[changeCols][changeRows] = inputValue;
     answer = true;
+
+    outlineBoxes();
   }
   else {
     //Create red box if input is incorrect
     fill("red");
+    noStroke();
     rectMode(CORNER);
     square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
 
     //Display input
     fill(maroon.r, maroon.g, maroon.b);
+    noStroke();
+    textSize(25);
     text(inputValue, inputX, inputY);
     answer = false;
+    outlineBoxes();
   }
 }
 
@@ -408,7 +438,8 @@ function strikes() {
   //Display strikes
   for (let x = 0; x < strikeArray.length; x++) {
     fill("green");
-    stroke(1);
+    stroke(brown.r, brown.g, brown.b);
+    strokeWeight(1);
     circle(grid[0][strikeArray[x]][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2, 35);
   }
 
@@ -425,6 +456,7 @@ function strikes() {
   if (strikeArray.length === 0) {
     fill(maroon.r, maroon.g, maroon.b);
     textAlign(CENTER);
-    text("You Lose!", grid[0][4][0] + BOX_SIZE/2, backButton.y + difficultyButton.h/2);
+    textSize(50);
+    text("You Lose!", width/2, height/2);
   }
 }
