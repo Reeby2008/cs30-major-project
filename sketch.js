@@ -203,9 +203,9 @@ function homeScreen() {
   currentScreen = "home";
   imageMode(CENTER);
   if (currentScreen === "home" && mouseX >= width/2 - sudokuVisual.width/2 && 
-                                 mouseX <= width/2 + sudokuVisual.width/2 && 
-                                 mouseY >= height/2 - sudokuVisual.height/2 && 
-                                 mouseY <= height/2 + sudokuVisual.height/2) {
+                                  mouseX <= width/2 + sudokuVisual.width/2 && 
+                                  mouseY >= height/2 - sudokuVisual.height/2 && 
+                                  mouseY <= height/2 + sudokuVisual.height/2) {
     //If hovering over button, enlarge image
     image(sudokuVisual, width/2, height/2, sudokuVisual.width * 1.1, sudokuVisual.height * 1.1);
   }
@@ -297,6 +297,7 @@ function sudokuScreen() {
       if (x < BOX_SIZE * 9 + grid[0][0][0]) {
         fill(beige.r, beige.g, beige.b);
         stroke(brown.r, brown.g, brown.b);
+        strokeWeight(1);
         square(x, NUMBER_PAD_Y, BOX_SIZE);
         
         fill(maroon.r, maroon.g, maroon.b);
@@ -319,6 +320,7 @@ function outlineBoxes() {
     endY: height/2 + GRID_SIZE/2
   };
 
+  //Outline every 3x3 box in the grid
   for (let y = gridPos.startY; y < gridPos.endY; y += BOX_SIZE) {
     for (let x = gridPos.startX; x < gridPos.endX; x += BOX_SIZE) {
       //Outline every third vertical line
@@ -345,7 +347,7 @@ function difficultyAndRules() {
   currentScreen = "instructions";
   
   //Display instructions
-  // document.getElementsByClassName("rules")
+  // document.getElementsByClassName("rules").style.display = "block";
   textSize(25);
   textAlign(CENTER);
   text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 3 * YOFFSET);
@@ -375,7 +377,7 @@ function back() {
 }
 
 function setGrid(layout) {
-  //Store layout in separate grid
+  //Store layout in separate array
   chosenLayout = layout;
   userInput.splice(0, GRID_WIDTH);
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
@@ -400,8 +402,8 @@ function checkInput(inputValue) {
     text(inputValue, inputX, inputY);
     textAlign(CENTER);
     userInput[changeCols][changeRows] = inputValue;
+    
     answer = true;
-
     outlineBoxes();
   }
   else {
@@ -416,6 +418,7 @@ function checkInput(inputValue) {
     noStroke();
     textSize(25);
     text(inputValue, inputX, inputY);
+
     answer = false;
     outlineBoxes();
   }
