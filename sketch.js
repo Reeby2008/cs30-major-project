@@ -273,20 +273,6 @@ function sudokuScreen() {
       rectMode(CORNER);
       square(x, y, BOX_SIZE);
       
-      // //Outline every third vertical line
-      // if (x === gridPos.startX + BOX_SIZE * 3 || x === gridPos.startX + BOX_SIZE * 6) {
-      //   strokeWeight(7);
-      //   stroke(brown.r, brown.g, brown.b);
-      //   line(x, gridPos.startY, x, gridPos.endY);
-      // }
-      
-      // //Outline every third horizontal line
-      // if (y === gridPos.startY + BOX_SIZE * 3 || y === gridPos.startY + BOX_SIZE * 6) {
-      //   strokeWeight(7);
-      //   stroke(brown.r, brown.g, brown.b);
-      //   line(gridPos.startX, y, gridPos.endX, y);
-      // }
-      
       //Store x and y values in grid array only once
       grid[row].push([x, y]);
     }
@@ -359,6 +345,7 @@ function difficultyAndRules() {
   currentScreen = "instructions";
   
   //Display instructions
+  // document.getElementsByClassName("rules")
   textSize(25);
   textAlign(CENTER);
   text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 3 * YOFFSET);
