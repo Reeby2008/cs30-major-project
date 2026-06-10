@@ -120,6 +120,7 @@ function mousePressed() {
     //If current screen is the difficulty screen
     if (currentScreen === "game" || currentScreen === "instructions") {
       difficulty();
+      document.getElementById("rules").style.display = "none";
     }
 
     //Set strikes back to normal if user clicks out of game
@@ -347,16 +348,16 @@ function difficultyAndRules() {
   currentScreen = "instructions";
   
   //Display instructions
-  // document.getElementsByClassName("rules").style.display = "block";
-  textSize(25);
-  textAlign(CENTER);
-  text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 3 * YOFFSET);
-  text("Each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 - 2 * YOFFSET);
-  text("the more spaces filled in at the beginning, the easier the game.", width/2, height/2 - YOFFSET);
-  text("Click on the box you would like to enter a number in, and type in the desired number.", width/2, height/2);
-  text("To input your desired number, you can either use your keyboard or use the numbers at the bottom of the screen.", width/2, height/2 + 1 * YOFFSET);
-  text("Use backspace to delete an incorrect input.", width/2, height/2 + 2 * YOFFSET);
-  text("After 3 incorrect guesses, you lose.", width/2, height/2 + 3 * YOFFSET);
+  document.getElementById("rules").style.display = "block";
+  // textSize(25);
+  // textAlign(CENTER);
+  // text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 3 * YOFFSET);
+  // text("Each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 - 2 * YOFFSET);
+  // text("the more spaces filled in at the beginning, the easier the game.", width/2, height/2 - YOFFSET);
+  // text("Click on the box you would like to enter a number in, and type in the desired number.", width/2, height/2);
+  // text("To input your desired number, you can either use your keyboard or use the numbers at the bottom of the screen.", width/2, height/2 + 1 * YOFFSET);
+  // text("Use backspace to delete an incorrect input.", width/2, height/2 + 2 * YOFFSET);
+  // text("After 3 incorrect guesses, you lose.", width/2, height/2 + 3 * YOFFSET);
   
   back();
 }

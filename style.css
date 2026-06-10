@@ -4,16 +4,12 @@ html, body {
   background-color: rgb(172, 121, 76);
 }
 
-/* .mainButton {
-  https://youtu.be/YEmdHbQBCSQ?si=QECAgapx3GNDefBm
-
-  padding: 48px 48px;
-  position: fixed;
+#rules {
+  display: none;
+  position: absolute;
+  right: 50%;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-} */
+}
 
 canvas {
   display: block;
