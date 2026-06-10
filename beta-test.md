@@ -12,3 +12,13 @@ Zara (has python knowledge only):
 - Title on difficulty screen
 - Changing background colour for fun each time number is inputted.
 - Fix repeating instructions
+
+Tavreenjot (no knowledge of computer science)
+- Timer/stopwatch
+- Make lives more obvious
+- Title inside instructions
+
+Huriya (no computer science knowledge)
+
+
+Tamara (no computer science knowledge)
