@@ -2,14 +2,13 @@
 // Mehreeb Shahzad
 // Friday, June 12, 2026
 
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// Extra for Experts: HTML/CSS
+// - I used both HTML and CSS for some of the visual aspects of the project, unrelated to actual game mechanics.
 //Sudoku home screen button image from AppAdvice.com (permanently shut down?)
 
 const BOX_SIZE = 75;
 const GRID_SIZE = BOX_SIZE * 9;
 const GRID_WIDTH = 9;
-const BUTTON_SIZE = 150;
 const NUMBER_PAD_Y = 850;
 
 let grid = [];
@@ -19,6 +18,7 @@ let currentScreen = "home";
 let answer = true;
 let easyLayout, mediumLayout, hardLayout, chosenLayout;
 let inputX, inputY, changeCols, changeRows;
+let correctAnswer, incorrectAnswer, losingSound;
 let sudokuVisual;
 let button = {
   x: 200,
@@ -33,11 +33,6 @@ let difficultyButton = {
 let backButton = {
   x: 50,
   y: 50
-};
-let orange = {
-  r: 255,
-  g: 197,
-  b: 71
 };
 let beige = {
   r: 242,
@@ -54,11 +49,6 @@ let maroon = {
   g: 20,
   b: 20
 };
-let lightBrown = {
-  r: 172,
-  g: 121,
-  b: 76
-};
 
 function preload() {
   //Load text files as strings in an array
@@ -66,11 +56,20 @@ function preload() {
   mediumLayout = loadStrings("layouts/mediumLayout.txt");
   hardLayout = loadStrings("layouts/hardLayout.txt");
 
+  //Load sound effects
+  correctAnswer = loadSound("sound-effects/correctAnswer.mp3");
+  incorrectAnswer = loadSound("sound-effects/incorrectAnswer.mp3");
+  losingSound = loadSound("sound-effects/losingSound.mp3");
+  winningSound = loadSound("sound-effects/winningSound.mp3");
+
   sudokuVisual = loadImage("sudokuLogo.png");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  textFont("times new roman");
+
+  document.getElementById("mainButton").style.display = "block";
 }
 
 function mousePressed() {
@@ -111,13 +110,13 @@ function mousePressed() {
       mouseX <= backButton.x + difficultyButton.w && 
       mouseY >= backButton.y && 
       mouseY <= backButton.y + difficultyButton.h) {
-    //If current screen is not the difficulty screen
+    //If current screen is the difficulty screen
     if (currentScreen === "difficulty") {
-      clear();
       homeScreen();
+      document.getElementById("mainButton").style.display = "block";
     }
 
-    //If current screen is the difficulty screen
+    //If current screen is not the difficulty screen
     if (currentScreen === "game" || currentScreen === "instructions") {
       difficulty();
       document.getElementById("rules").style.display = "none";
@@ -127,21 +126,13 @@ function mousePressed() {
     strikeArray = [3, 4, 5];
   }
 
-  //Take to difficulty screen
-  if (currentScreen === "home" && mouseX >= width/2 - sudokuVisual.width/2 && 
-                                  mouseX <= width/2 + sudokuVisual.width/2 && 
-                                  mouseY >= height/2 - sudokuVisual.height/2 && 
-                                  mouseY <= height/2 + sudokuVisual.height/2) {
-    difficulty();
-  }
-
   //Detect which box is clicked and if it's empty or not
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
-      if (currentScreen === "game" && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && 
-                                                                       mouseX <= grid[cols][rows][0] + BOX_SIZE && 
-                                                                       mouseY >= grid[cols][rows][1] && 
-                                                                       mouseY <= grid[cols][rows][1] + BOX_SIZE) {
+      if (currentScreen === "game" && strikeArray.length !== 0 && userInput[cols][rows] === "0" && mouseX >= grid[cols][rows][0] && 
+                                                                                                   mouseX <= grid[cols][rows][0] + BOX_SIZE && 
+                                                                                                   mouseY >= grid[cols][rows][1] && 
+                                                                                                   mouseY <= grid[cols][rows][1] + BOX_SIZE) {
         //Redraw grid so it gets rid of coloured box
         sudokuScreen();
 
@@ -152,7 +143,7 @@ function mousePressed() {
         changeRows = rows;
 
         //Change colour of the square the user clicks on
-        fill(orange.r, orange.g, orange.b);
+        fill(255, 197, 71);
         noStroke();
         rectMode(CENTER);
         square(inputX, inputY, BOX_SIZE - 1);
@@ -194,30 +185,10 @@ function keyPressed() {
   }
 }
 
-function draw() {
-  if (currentScreen === "home") {
-    homeScreen();
-  }
-}
-
 function homeScreen() {
+  clear();
   currentScreen = "home";
-  imageMode(CENTER);
-  if (currentScreen === "home" && mouseX >= width/2 - sudokuVisual.width/2 && 
-                                  mouseX <= width/2 + sudokuVisual.width/2 && 
-                                  mouseY >= height/2 - sudokuVisual.height/2 && 
-                                  mouseY <= height/2 + sudokuVisual.height/2) {
-    //If hovering over button, enlarge image
-    image(sudokuVisual, width/2, height/2, sudokuVisual.width * 1.1, sudokuVisual.height * 1.1);
-  }
-
-  else if (currentScreen === "home") {
-    //Cover previous buttons
-    background(lightBrown.r, lightBrown.g, lightBrown.b);
-
-    //Display Image
-    image(sudokuVisual, width/2, height/2, sudokuVisual.width, sudokuVisual.height);
-  }
+  document.getElementById("mainButton").style.display = "block";
 }
 
 function difficulty() {
@@ -254,13 +225,10 @@ function sudokuScreen() {
     endX: width/2 + GRID_SIZE/2,
     endY: height/2 + GRID_SIZE/2
   };
-  grid = [];
   
   clear();
-  // backToDifficulty = true;
   currentScreen = "game";
   stroke(brown.r, brown.g, brown.b);
-  background(lightBrown.r, lightBrown.g, lightBrown.b);
   
   //Display 9x9 grid and push x and y coordinates into grid array
   for (let y = gridPos.startY; y < gridPos.endY; y += BOX_SIZE) {
@@ -349,15 +317,6 @@ function difficultyAndRules() {
   
   //Display instructions
   document.getElementById("rules").style.display = "block";
-  // textSize(25);
-  // textAlign(CENTER);
-  // text("Each column, row, and 3x3 box should contain the numbers 1-9 exactly once.", width/2, height/2 - 3 * YOFFSET);
-  // text("Each Sudoku grid comes with a few spaces already filled in;", width/2, height/2 - 2 * YOFFSET);
-  // text("the more spaces filled in at the beginning, the easier the game.", width/2, height/2 - YOFFSET);
-  // text("Click on the box you would like to enter a number in, and type in the desired number.", width/2, height/2);
-  // text("To input your desired number, you can either use your keyboard or use the numbers at the bottom of the screen.", width/2, height/2 + 1 * YOFFSET);
-  // text("Use backspace to delete an incorrect input.", width/2, height/2 + 2 * YOFFSET);
-  // text("After 3 incorrect guesses, you lose.", width/2, height/2 + 3 * YOFFSET);
   
   back();
 }
@@ -394,6 +353,7 @@ function checkInput(inputValue) {
   if (inputValue === chosenLayout[changeCols + 13][changeRows]) {
     //Create green box if input is correct
     fill("green");
+    strokeWeight(1);
     rectMode(CORNER);
     square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
     
@@ -403,6 +363,9 @@ function checkInput(inputValue) {
     text(inputValue, inputX, inputY);
     textAlign(CENTER);
     userInput[changeCols][changeRows] = inputValue;
+
+    //Play appropriate sound effect
+    correctAnswer.play();
     
     answer = true;
     outlineBoxes();
@@ -410,6 +373,7 @@ function checkInput(inputValue) {
   else {
     //Create red box if input is incorrect
     fill("red");
+    strokeWeight(1);
     noStroke();
     rectMode(CORNER);
     square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
@@ -419,6 +383,9 @@ function checkInput(inputValue) {
     noStroke();
     textSize(25);
     text(inputValue, inputX, inputY);
+
+    //Play appropriate sound effect
+    incorrectAnswer.play();
 
     answer = false;
     outlineBoxes();
@@ -436,7 +403,7 @@ function strikes() {
 
   //Take away strike if input is incorrect
   if (!answer) {
-    fill(lightBrown.r, lightBrown.g, lightBrown.b);
+    fill(172, 121, 76);
     noStroke();
     rect(grid[0][strikeArray[0]][0], backButton.y, BOX_SIZE);
     strikeArray.splice(0, 1);
@@ -445,9 +412,17 @@ function strikes() {
 
   //Display loser screen if all strikes are out
   if (strikeArray.length === 0) {
+    clear();
+
+    //Display text
     fill(maroon.r, maroon.g, maroon.b);
     textAlign(CENTER);
     textSize(50);
     text("You Lose!", width/2, height/2);
+
+    //Play losing sound effect
+    losingSound.play();
+
+    back();
   }
 }

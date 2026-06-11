@@ -4,13 +4,50 @@ html, body {
   background-color: rgb(172, 121, 76);
 }
 
+canvas {
+  display: block;
+}
+
 #rules {
+  /* Originally keep it invisible */
   display: none;
+
+  /* Absolute position allows button to be over the canvas */
+  position: absolute;
+
+  /* Move object to center of screen */
+  right: 50%;
+  top: 50%;
+  transform: translate(50%, -50%);
+
+  font-size: x-large;
+
+  color: rgb(89, 20, 20);
+}
+
+#mainButton {
   position: absolute;
   right: 50%;
   top: 50%;
+  transform: translate(50%, -50%);
+
+  /* Size of button */
+  width: 500px;
+  height: 500px;
+
+  /* Adjust background */
+  background-image: url("sudokuLogo.png");
+  background-color: rgb(172, 121, 76);
+  background-size: contain;
+  border: none;
+
+  /* Hover features */
+  cursor: pointer;
+  transition: width 2s, height 2s;
 }
 
-canvas {
-  display: block;
+#mainButton:hover {
+  /* End size of button while hovering over it */
+  width: 550px;
+  height: 550px;
 }
