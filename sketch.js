@@ -3,7 +3,7 @@
 // Friday, June 12, 2026
 
 // Extra for Experts: HTML/CSS
-// - I used both HTML and CSS for some of the visual aspects of the project, unrelated to actual game mechanics.
+// - I used both HTML and CSS for some of the visual aspects and buttons of the project, unrelated to actual game mechanics.
 //Sudoku home screen button image from AppAdvice.com (permanently shut down?)
 
 const BOX_SIZE = 75;
@@ -51,7 +51,7 @@ let maroon = {
 };
 
 function preload() {
-  //Load text files as strings in an array
+  //Load text files as an array of strings
   easyLayout = loadStrings("layouts/easyLayout.txt");
   mediumLayout = loadStrings("layouts/mediumLayout.txt");
   hardLayout = loadStrings("layouts/hardLayout.txt");
@@ -148,8 +148,10 @@ function mousePressed() {
         rectMode(CENTER);
         square(inputX, inputY, BOX_SIZE - 1);
 
-        strikes();
+        //Draw thicker lines over highlighted box so the box doesn't cover the border
         outlineBoxes();
+
+        strikes();
       }
     }
   }
@@ -310,8 +312,6 @@ function outlineBoxes() {
 }
 
 function difficultyAndRules() {
-  const YOFFSET = 25;
-
   clear();
   currentScreen = "instructions";
   
@@ -337,9 +337,11 @@ function back() {
 }
 
 function setGrid(layout) {
-  //Store layout in separate array
+  //Store layout in separate array and get rid of potential past layouts played
   chosenLayout = layout;
   userInput.splice(0, GRID_WIDTH);
+
+  //Store new game that is being played
   for (let cols = 0; cols < GRID_WIDTH; cols++) {
     userInput.push([]);
     for (let rows = 0; rows < GRID_WIDTH; rows++) {
@@ -357,18 +359,13 @@ function checkInput(inputValue) {
     rectMode(CORNER);
     square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
     
-    //Display input
-    fill(maroon.r, maroon.g, maroon.b);
-    noStroke();
-    text(inputValue, inputX, inputY);
-    textAlign(CENTER);
+    //Update userInput array
     userInput[changeCols][changeRows] = inputValue;
 
     //Play appropriate sound effect
     correctAnswer.play();
     
     answer = true;
-    outlineBoxes();
   }
   else {
     //Create red box if input is incorrect
@@ -377,19 +374,19 @@ function checkInput(inputValue) {
     noStroke();
     rectMode(CORNER);
     square(grid[changeCols][changeRows][0], grid[changeCols][changeRows][1], BOX_SIZE);
-
-    //Display input
-    fill(maroon.r, maroon.g, maroon.b);
-    noStroke();
-    textSize(25);
-    text(inputValue, inputX, inputY);
-
+    
     //Play appropriate sound effect
     incorrectAnswer.play();
-
+    
     answer = false;
-    outlineBoxes();
   }
+  //Display input
+  fill(maroon.r, maroon.g, maroon.b);
+  noStroke();
+  textSize(25);
+  text(inputValue, inputX, inputY);
+
+  outlineBoxes();
 }
 
 function strikes() {
@@ -420,7 +417,7 @@ function strikes() {
     textSize(50);
     text("You Lose!", width/2, height/2);
 
-    //Play losing sound effect
+    //Play losing music
     losingSound.play();
 
     back();
