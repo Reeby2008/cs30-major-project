@@ -62,7 +62,6 @@ function preload() {
   correctAnswer = loadSound("sound-effects/correctAnswer.mp3");
   incorrectAnswer = loadSound("sound-effects/incorrectAnswer.mp3");
   losingSound = loadSound("sound-effects/losingSound.mp3");
-  winningSound = loadSound("sound-effects/winningSound.mp3");
 
   sudokuVisual = loadImage("sudokuLogo.png");
 }
@@ -114,12 +113,14 @@ function mousePressed() {
       mouseY <= backButton.y + difficultyButton.h) {
     //If current screen is the difficulty screen
     if (currentScreen === "difficulty") {
+      clear();
       homeScreen();
       document.getElementById("mainButton").style.display = "block";
     }
 
     //If current screen is not the difficulty screen
     if (currentScreen === "game" || currentScreen === "instructions") {
+      clear();
       difficulty();
       document.getElementById("rules").style.display = "none";
     }
@@ -190,7 +191,6 @@ function keyPressed() {
 }
 
 function homeScreen() {
-  clear();
   currentScreen = "home";
 
   //Display button
@@ -198,7 +198,7 @@ function homeScreen() {
 }
 
 function difficulty() {
-  clear();
+  document.getElementById("mainButton").style.display = "none";
   currentScreen = "difficulty";
   
   //Buttons
