@@ -4,7 +4,9 @@
 
 // Extra for Experts: HTML/CSS
 // - I used both HTML and CSS for some of the visual aspects and buttons of the project, unrelated to actual game mechanics.
-//Sudoku home screen button image from AppAdvice.com (permanently shut down?)
+
+//Sudoku home screen button image: AppAdvice.com (permanently shut down?)
+//Sound effects: https://pixabay.com/sound-effects/
 
 const BOX_SIZE = 75;
 const GRID_SIZE = BOX_SIZE * 9;
@@ -173,8 +175,8 @@ function keyPressed() {
   //Inputting numbers into grid
   if (strikeArray.length > 0) {
     for (let numbers = 1; numbers <= GRID_WIDTH; numbers++) {
+      //Check if input is correct and update strikes
       if (currentScreen === "game" && key === "" + numbers) {
-        //Check if input is correct
         checkInput("" + numbers);
         strikes();
       }
@@ -190,6 +192,8 @@ function keyPressed() {
 function homeScreen() {
   clear();
   currentScreen = "home";
+
+  //Display button
   document.getElementById("mainButton").style.display = "block";
 }
 
